@@ -1,0 +1,12 @@
+# compiled classes
+*.class
+
+# IntelliJ files
+**/.idea
+*.iml
+
+# Eclipse files
+**/bin
+*.prefs
+*.project
+*.classpath
