@@ -6,6 +6,12 @@
  * User Manual available at https://docs.gradle.org/7.6/userguide/building_java_projects.html
  */
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
 plugins {
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
@@ -25,6 +31,12 @@ dependencies {
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation("com.google.guava:guava:31.1-jre")
+
+    api("org.antlr:antlr4-maven-plugin:4.9.2")
+    api("org.antlr:antlr4-runtime:4.9.2")
+    api("org.ow2.asm:asm:9.4")
+    api("org.ow2.asm:asm-util:9.4")
+    api("commons-io:commons-io:2.11.0")
 }
 
 tasks.named<Test>("test") {
