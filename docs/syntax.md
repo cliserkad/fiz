@@ -47,9 +47,15 @@ A Method Header is made of 3 parts:
 2. Method Name
 3. Parameters
 
+Parameters are separated by `,` and consist of 3 parts:
+
+1. Type
+2. Name
+3. Default Value (optional)
+
 The syntax looks like this:
 ```fiz
-ReturnType methodName(ParameterType1 parameterName, ParameterType2 parameterName2) {
+ReturnType methodName(ParameterType1 parameterName = defaultValue, ParameterType2 parameterName2) {
     // some code here
 }
 ```
