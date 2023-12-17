@@ -16,3 +16,9 @@
 
 # Ignore Gradle build output directory
 build
+
+# Ignore Maven build directory
+**/target/
+
+# Ignore generated files
+**/gen/
