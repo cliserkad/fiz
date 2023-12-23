@@ -1,4 +1,4 @@
-# fiz Nullable Types
+# Nullable Types
 
 All types are non-nullable by default. To make a type nullable, add a `?` after the type name.
 Nullables are explicit to avoid the [billion dollar mistake](https://en.wikipedia.org/wiki/Null_pointer).

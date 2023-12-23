@@ -97,6 +97,20 @@ do {
 } while a < 5;
 ```
 
+## Imports
+```fiz
+import {
+    // qualified names here
+}
+```
+Example:
+```fiz
+import {
+    java.lang.System
+    java.io.File
+}
+```
+
 ## Keywords
 * `type`
 * `enum` enumeration
