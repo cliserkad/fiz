@@ -4,4 +4,4 @@
 * [license](/license.md)
 * [syntax](/syntax.md)
 * [goals](/goals.md)
-* [nullable types](/nullable-types.md)
+* [nullable types](/nullable_types.md)
