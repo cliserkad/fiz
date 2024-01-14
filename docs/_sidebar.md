@@ -5,3 +5,4 @@
 * [syntax](/syntax.md)
 * [goals](/goals.md)
 * [nullable types](/nullable_types.md)
+* [dependencies](/dependencies.md)
