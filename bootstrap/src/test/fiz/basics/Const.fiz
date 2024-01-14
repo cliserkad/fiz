@@ -1,0 +1,7 @@
+type Const {
+    const MSG : "hello from Const"
+
+    main {
+        println(MSG)
+    }
+}

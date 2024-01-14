@@ -1,6 +1,10 @@
 # compiled classes
 *.class
 
+# Maven output
+**/gen
+**/target
+
 # IntelliJ files
 **/.idea
 *.iml
@@ -11,14 +15,5 @@
 *.project
 *.classpath
 
-# Ignore Gradle project-specific cache directory
-.gradle
-
-# Ignore Gradle build output directory
-build
-
-# Ignore Maven build directory
-**/target/
-
-# Ignore generated files
-**/gen/
+# ANTLR4 token files
+*.tokens

@@ -1,0 +1,5 @@
+type PrintArg {
+  main {
+    println(args[0])
+  }
+}

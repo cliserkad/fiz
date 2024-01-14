@@ -1,0 +1,17 @@
+// test if else control flow
+type IfElse {
+
+  main {
+    if true {
+      print("pass")
+    } else {
+      print("fail")
+    }
+
+    if false {
+      print("fail")
+    } else {
+      print("pass")
+    }
+  }
+}

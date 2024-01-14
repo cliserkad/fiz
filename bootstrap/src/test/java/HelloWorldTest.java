@@ -1,14 +1,14 @@
 package test.java;
 
-import dev.fiz.bootstrap.HelloWorld;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static dev.fiz.bootstrap.BestList.list;
 
 public class HelloWorldTest {
 
 	@Test
 	public void testHelloWorld() {
-		Assertions.assertEquals(HelloWorld.getHelloWorld(), "hello world");
+		new StandardFizTest("HelloWorld", null, list("hello world")).testFiz();
 	}
 
 }

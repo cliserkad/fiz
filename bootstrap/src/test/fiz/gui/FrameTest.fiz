@@ -1,0 +1,10 @@
+path test.fiz.gui
+
+use javax.swing.JFrame
+
+type FrameTest {
+  main {
+    JFrame frame: JFrame("Title")
+    frame.setVisible(true)
+  }
+}

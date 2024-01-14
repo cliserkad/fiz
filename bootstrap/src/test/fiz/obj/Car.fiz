@@ -1,0 +1,12 @@
+path test.fiz.obj
+
+type Car {
+  int year: 1998
+  string model: "Honda Accord"
+
+  main {
+    Car car: Car()
+    println("success")
+  }
+
+}
