@@ -35,21 +35,22 @@ public class IndexAccess extends BasePushable implements CommonText {
 
 		if(variable.isArray()) {
 			if(variable.type.isBaseType()) {
-				switch(variable.type.toBaseType()) {
-					case BaseType.INT:
-					case BaseType.BOOLEAN:
-						visitor.visitInsn(IALOAD);
-						break;
-					case BaseType.STRING:
-						visitor.visitInsn(AALOAD);
-						break;
-					default:
-						throw new UnimplementedException(SWITCH_BASETYPE);
-				}
+				final int loadInstruction = switch(variable.type.toBaseType()) {
+					case BOOLEAN, BYTE -> BALOAD;
+					case SHORT -> SALOAD;
+					case CHAR -> CALOAD;
+					case INT -> IALOAD;
+					case FLOAT -> FALOAD;
+					case LONG -> LALOAD;
+					case DOUBLE -> DALOAD;
+					case STRING -> AALOAD;
+				};
+				visitor.visitInsn(loadInstruction);
 			} else
 				visitor.visitInsn(AALOAD);
 		} else if(variable.toBaseType() == BaseType.STRING)
 			STRING_CHAR_AT.invoke(visitor);
+
 		else
 			throw new IllegalArgumentException(variable + " is not an array nor a string");
 		return this;

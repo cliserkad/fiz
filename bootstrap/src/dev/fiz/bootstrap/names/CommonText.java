@@ -12,10 +12,7 @@ public interface CommonText extends Opcodes {
 	String KEYWORD_FALSE = "false";
 	String KEYWORD_CLASS = "class";
 
-	// Defaults for BaseTypes
-	int DEFAULT_INT = 0;
-	String DEFAULT_STRING = "";
-	boolean DEFAULT_BOOLEAN = false;
+	String THIS = "this";
 
 	String EMPTY_STRING = "";
 
@@ -27,11 +24,8 @@ public interface CommonText extends Opcodes {
 	ReturnValue VOID = ReturnValue.VOID;
 	String DEFAULT = "default";
 
-	// Error messages
-	String SWITCH_OPERATOR = "switch on Operator";
+	// error messages
 	String SWITCH_BASETYPE = "switch on BaseType";
-	String SWITCH_VALUETYPE = "switch on ValueType";
 	String INCOMPATIBLE = " has a type which is incompatible with the type of ";
-	String BASETYPE_MISS = "A BaseType was not accounted for";
 
 }
