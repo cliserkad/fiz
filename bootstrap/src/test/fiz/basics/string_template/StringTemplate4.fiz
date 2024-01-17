@@ -2,8 +2,8 @@
 type StringTemplate4 {
 
   main {
-    int n0= 99
-    int n1= 230
+    i32 n0= 99
+    i32 n1= 230
     println("$n0 is lower than $n1")
   }
 

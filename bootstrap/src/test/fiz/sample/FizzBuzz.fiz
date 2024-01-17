@@ -1,6 +1,6 @@
 type FizzBuzz {
   main {
-    int input= parseInt(args[0])
+    i32 input= parseInt(args[0])
 
     if input % 3 == 0 {
       print("Fizz")

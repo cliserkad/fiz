@@ -1,6 +1,6 @@
 type BaseTypeDefaults {
   main {
-    int i
+    i32 i
     boolean b
     string s
     println(i)

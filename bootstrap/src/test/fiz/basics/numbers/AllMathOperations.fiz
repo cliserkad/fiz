@@ -2,26 +2,26 @@ type AllMathOperations {
     const ASSERTION_PASS= ""
 
     main {
-        byte b6= 6
-        byte b4= 4
+        i8 b6= 6
+        i8 b4= 4
 
-        short s6= 6
-        short s4= 4
+        i16 s6= 6
+        i16 s4= 4
 
         char c6= 6
         char c4= 4
 
-        int i6= 6
-        int i4= 4
+        i32 i6= 6
+        i32 i4= 4
 
-        long l6= 6
-        long l4= 4
+        i64 l6= 6
+        i64 l4= 4
 
-        float f6= 6.0
-        float f4= 4.0
+        f32 f6= 6.0
+        f32 f4= 4.0
 
-        double d6= 6.0
-        double d4= 4.0
+        f64 d6= 6.0
+        f64 d4= 4.0
 
         // addition
         assert b6 + b4 == 10

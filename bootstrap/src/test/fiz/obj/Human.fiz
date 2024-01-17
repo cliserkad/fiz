@@ -1,7 +1,7 @@
 path test.fiz.obj
 
 type Human {
-    int money
+    i32 money
 
     main {
         Human linarez= Human(999_999)
@@ -11,7 +11,7 @@ type Human {
         println(johnson)
     }
 
-    init(int money) {
+    init(i32 money) {
         this.money= money
     }
 

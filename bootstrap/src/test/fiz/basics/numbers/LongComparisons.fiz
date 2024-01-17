@@ -1,7 +1,7 @@
 type LongComparisons {
     main {
-        long a= 0
-        long b= 1
+        i64 a= 0
+        i64 b= 1
 
         if a == b {
             println("fail   $a == $b")

@@ -31,13 +31,13 @@ WHILE: 'while';
 
 // base types
 BOOLEAN: 'boolean';
-BYTE: 'byte';
+BYTE: 'i8';
+SHORT: 'i16';
 CHAR: 'char';
-DOUBLE: 'double';
-FLOAT: 'float';
-INT: 'int';
-LONG: 'long';
-SHORT: 'short';
+INT: 'i32';
+FLOAT: 'f32';
+LONG: 'i64';
+DOUBLE: 'f64';
 STRING: 'string';
 
 // boolean values

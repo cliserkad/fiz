@@ -1,6 +1,6 @@
 type StringAutoCast {
   main {
-    int a = 10
+    i32 a = 10
     boolean b = true
     string s = "hello from StringAutoCast"
     println(a)

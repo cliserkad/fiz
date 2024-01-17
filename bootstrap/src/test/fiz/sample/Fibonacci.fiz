@@ -1,10 +1,10 @@
 type Fibonacci {
   main {
-    // parse the first argument as an int
+    // parse the first argument as an i32
     println(fib(parseInt(args[0])))
   }
 
-  int fib(int n) {
+  i32 fib(i32 n) {
     if n <= 1 {
       return n
     } else {

@@ -1,7 +1,7 @@
 type IntComparisons {
     main {
-        int a= 0
-        int b= 1
+        i32 a= 0
+        i32 b= 1
 
         if a == b {
             println("fail   $a == $b")

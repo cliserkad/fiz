@@ -1,6 +1,6 @@
 type VariableAssignment {
   main {
-    int~ a
+    i32~ a
     a = 1
     boolean~ b
     b = true

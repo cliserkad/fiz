@@ -1,7 +1,7 @@
 path test.fiz.obj
 
 type Car3 {
-  int year
+  i32 year
   string model
 
   main {
