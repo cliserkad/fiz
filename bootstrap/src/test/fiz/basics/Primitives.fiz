@@ -1,12 +1,12 @@
 type Primitives {
   main {
-    boolean b: true
-    byte b2: 120
-    short s: 32 000
-    char c: 'C'
-    int i: 64 000
-    float f: 1.5
-    string str: "string"
+    boolean b= true
+    byte b2= 120
+    short s= 32 000
+    char c= 'C'
+    int i= 64 000
+    float f= 1.5
+    string str= "string"
 
     println(b)
     println(b2)

@@ -1,4 +1,4 @@
-// author: Bryan Johnson
+// author= Bryan Johnson
 type IfTest {
   main {
     if true {
@@ -9,7 +9,7 @@ type IfTest {
       println("IfTest failed, this statement was under if(false) and should not have been printed")
     }
 
-    boolean b : true
+    boolean b = true
     if b {
       println("boolean b was true")
     }

@@ -1,11 +1,11 @@
 path test.fiz.obj
 
 type Car2 {
-  int year: 1998
-  string model: "Honda Accord"
+  int year= 1998
+  string model= "Honda Accord"
 
   main {
-    Car2 car: Car2()
+    Car2 car= Car2()
     println(car.toString())
   }
 

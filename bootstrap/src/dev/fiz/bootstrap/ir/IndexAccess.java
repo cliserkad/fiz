@@ -50,7 +50,6 @@ public class IndexAccess extends BasePushable implements CommonText {
 				visitor.visitInsn(AALOAD);
 		} else if(variable.toBaseType() == BaseType.STRING)
 			STRING_CHAR_AT.invoke(visitor);
-
 		else
 			throw new IllegalArgumentException(variable + " is not an array nor a string");
 		return this;

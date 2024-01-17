@@ -1,6 +1,6 @@
-// author: Bryan Johnson
+// author= Bryan Johnson
 type IfArgGiven {
-  const NO_ARG : "No argument given"
+  const NO_ARG = "No argument given"
 
   main {
     // if args has 0 or less arguments
@@ -8,7 +8,7 @@ type IfArgGiven {
       println(NO_ARG)
     } else {
       // if the first argument is not empty
-      string s : args[0]
+      string s = args[0]
       if s {
         println(s)
        } else {

@@ -1,9 +1,9 @@
 type FloatComparisons {
     main {
-        float a: 0.0
-        float b: 1.0
+        float a= 0.0
+        float b= 1.0
 
-        if a = b {
+        if a == b {
             println("fail   $a == $b")
         } else {
             println("pass   $a == $b")

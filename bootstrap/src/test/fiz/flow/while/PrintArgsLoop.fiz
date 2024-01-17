@@ -1,10 +1,10 @@
-// author: Bryan Johnson
+// author= Bryan Johnson
 type PrintArgsLoop {
   main {
     int~ a
     while a < args.size {
       println(args[a])
-      a +: 1
+      a += 1
     }
   }
 }

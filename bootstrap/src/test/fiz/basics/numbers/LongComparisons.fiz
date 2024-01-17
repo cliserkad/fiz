@@ -1,9 +1,9 @@
 type LongComparisons {
     main {
-        long a: 0
-        long b: 1
+        long a= 0
+        long b= 1
 
-        if a = b {
+        if a == b {
             println("fail   $a == $b")
         } else {
             println("pass   $a == $b")

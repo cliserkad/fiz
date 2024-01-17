@@ -1,9 +1,9 @@
 type DoubleComparisons {
     main {
-        double a: 0.0
-        double b: 1.0
+        double a= 0.0
+        double b= 1.0
 
-        if a = b {
+        if a == b {
             println("fail   $a == $b")
         } else {
             println("pass   $a == $b")

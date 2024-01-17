@@ -4,15 +4,15 @@ type Human {
     int money
 
     main {
-        Human linarez: Human(999_999)
-        Human johnson: Human(111_111)
+        Human linarez= Human(999_999)
+        Human johnson= Human(111_111)
 
         println(linarez)
         println(johnson)
     }
 
     init(int money) {
-        this.money: money
+        this.money= money
     }
 
     string toString(this) {

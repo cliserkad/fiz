@@ -1,9 +1,9 @@
 type IntComparisons {
     main {
-        int a: 0
-        int b: 1
+        int a= 0
+        int b= 1
 
-        if a = b {
+        if a == b {
             println("fail   $a == $b")
         } else {
             println("pass   $a == $b")

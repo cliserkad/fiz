@@ -45,7 +45,7 @@ FALSE: 'false';
 TRUE: 'true';
 
 // syntax
-SET: ':';
+SET: '=';
 BODY_CLOSE: '}'; // closing bracket
 BODY_OPEN: '{'; // opening bracket
 BRACE_CLOSE: ']';
@@ -58,7 +58,7 @@ SEMICOLON: ';';
 SEPARATOR: ',';
 
 // comparator
-EQUAL: '=';
+EQUAL: '==';
 LESS_OR_EQUAL: '<=';
 LESS_THAN: '<';
 MORE_OR_EQUAL: '>=';

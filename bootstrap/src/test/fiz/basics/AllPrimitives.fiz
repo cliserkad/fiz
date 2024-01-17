@@ -1,14 +1,14 @@
 type AllPrimitives {
   main {
-    long l: 133444444444444
-    double d: 92348934.824837624734
-    boolean b: true
-    byte b2: 120
-    short s: 32 000
-    char c: 'C'
-    int i: 64 000
-    float f: 1.5
-    string str: "string"
+    long l= 133444444444444
+    double d= 92348934.824837624734
+    boolean b= true
+    byte b2= 120
+    short s= 32 000
+    char c= 'C'
+    int i= 64 000
+    float f= 1.5
+    string str= "string"
 
     println(l)
     println(d)

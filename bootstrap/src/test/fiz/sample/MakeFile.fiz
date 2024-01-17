@@ -5,7 +5,7 @@ use test.fiz.sample.FileUtil
 
 type MakeFile {
   main {
-    File f: File("test.txt")
+    File f= File("test.txt")
     println(f)
     f.createNewFile()
     println(FileUtil.writeOut(f, "Testing this out!"))

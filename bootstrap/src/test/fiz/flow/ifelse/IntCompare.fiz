@@ -1,9 +1,9 @@
-// author: Bryan Johnson
+// author= Bryan Johnson
 type IntCompare {
-  const ASSERTION_PASS : "This should be printed 8 times"
+  const ASSERTION_PASS = "This should be printed 8 times"
 
   main {
-    if 1 = 1 { assert true }
+    if 1 == 1 { assert true }
 
     if 1 != 0 { assert true }
 

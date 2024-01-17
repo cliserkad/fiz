@@ -1,4 +1,4 @@
-// author: Bryan Johnson
+// author= Bryan Johnson
 type NeverLoop {
   main {
     println("hello from NeverLoop")

@@ -5,13 +5,13 @@ type Car4 {
   string model
 
   main {
-    Car4 car: Car4("Honda Accord")
+    Car4 car= Car4("Honda Accord")
     println(car)
   }
 
   init(string model) {
-    this.model: model
-    this.year: 1998
+    this.model= model
+    this.year= 1998
   }
 
   string toString(this) {

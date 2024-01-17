@@ -6,7 +6,7 @@ type FibDefaults {
     println(fib(12))
   }
 
-  int fib(int n: 10) {
+  int fib(int n= 10) {
     if n <= 1 {
       return n
     } else {

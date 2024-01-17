@@ -7,21 +7,21 @@ type ForRange {
   }
 
   printDefaultTo10() {
-      for i: ..10 {
+      for i= ..10 {
         print(i)
       }
       println("")
     }
 
   print0To9() {
-    for i: 0..10 {
+    for i= 0..10 {
       print(i)
     }
     println("")
   }
 
   print1To9() {
-    for i: 1..10 {
+    for i= 1..10 {
       print(i)
     }
     println("")

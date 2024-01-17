@@ -1,7 +1,7 @@
-// author: Bryan Johnson
+// author= Bryan Johnson
 type IfStringNotEmpty {
-  const GOOD: "hello from IfStringNotEmpty"
-  const FAIL: "This message was shown in error"
+  const GOOD= "hello from IfStringNotEmpty"
+  const FAIL= "This message was shown in error"
 
   main {
     // set string to ""
@@ -11,7 +11,7 @@ type IfStringNotEmpty {
       println(FAIL)
     }
 
-    string s2: "testing"
+    string s2= "testing"
     // if s is not empty
     // should yield true as s is "testing"
     if s2 {
