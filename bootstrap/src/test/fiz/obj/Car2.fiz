@@ -1,4 +1,4 @@
-path test.fiz.obj
+package test.fiz.obj
 
 type Car2 {
   i32 year= 1998

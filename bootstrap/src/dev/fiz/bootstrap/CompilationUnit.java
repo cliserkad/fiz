@@ -358,9 +358,9 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 	}
 
 	@Override
-	public void enterPath(final FizParser.PathContext ctx) {
+	public void enterPackage(final FizParser.PackageContext ctx) {
 		if(pass == 1)
-			pkgName = ctx.getText().trim().substring(4).replace(';', ' ').trim();
+			pkgName = ctx.addressable().getText();
 	}
 
 	@Override
@@ -541,6 +541,7 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 
 			// give name to ClassWriter
 			cw.visit(V1_6, ACC_PUBLIC + ACC_SUPER, clazz.toInternalName().nameString(), null, InternalName.OBJECT.nameString(), null);
+			// FIXME investigate significance of clazz name here
 			cw.visitSource(clazz.name + ".FizParser", null);
 
 			return true;

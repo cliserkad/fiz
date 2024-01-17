@@ -1,4 +1,4 @@
-path test.fiz.files
+package test.fiz.files
 
 type Caller {
     // FIXME fails to pull const from Container

@@ -19,7 +19,7 @@ ASSERT: 'assert';
 CONST: 'const';
 FOR: 'for';
 MAIN: 'main';
-PATH: 'path';
+PACKAGE: 'package';
 RETURN: 'return';
 R_ELSE: 'else';
 R_IF: 'if';

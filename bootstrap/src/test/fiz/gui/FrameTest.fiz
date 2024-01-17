@@ -1,4 +1,4 @@
-path test.fiz.gui
+package test.fiz.gui
 
 import {
     javax.swing.JFrame

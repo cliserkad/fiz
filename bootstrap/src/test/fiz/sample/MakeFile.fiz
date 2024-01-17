@@ -1,4 +1,4 @@
-path test.fiz.sample
+package test.fiz.sample
 
 import {
     java.io.File

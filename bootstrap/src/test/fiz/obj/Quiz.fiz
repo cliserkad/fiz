@@ -1,4 +1,4 @@
-path test.fiz.obj
+package test.fiz.obj
 
 import {
     java.util.Scanner
