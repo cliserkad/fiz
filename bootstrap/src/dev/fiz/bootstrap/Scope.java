@@ -43,7 +43,7 @@ public class Scope implements Opcodes {
 	}
 
 	public Variable newVariable(final String name, final ToInternalName type) {
-		return newVariable(name, type, Variable.DEFAULT_MUTABLE);
+		return newVariable(name, type, Details.DEFAULT_MUTABLE);
 	}
 
 	public Variable newVariable(final Details details) {

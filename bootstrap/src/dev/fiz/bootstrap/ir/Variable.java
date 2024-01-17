@@ -10,8 +10,6 @@ import dev.fiz.bootstrap.names.InternalName;
 
 public class Variable extends Details implements Assignable, CommonText {
 
-	public static final boolean DEFAULT_MUTABLE = false;
-
 	public final int localIndex;
 
 	// track if it's been set
@@ -50,7 +48,7 @@ public class Variable extends Details implements Assignable, CommonText {
 	}
 
 	@Override
-	public Variable push(final Actor visitor) throws UnimplementedException {
+	public Variable push(final Actor visitor) {
 		final int loadInstruction;
 		if(isBaseType() && !isArray()) {
 			loadInstruction = switch(type.toBaseType()) {
