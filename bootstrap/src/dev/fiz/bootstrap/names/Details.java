@@ -4,6 +4,7 @@ import dev.fiz.bootstrap.CompilationUnit;
 import dev.fiz.bootstrap.MethodHeader;
 import dev.fiz.bootstrap.SymbolResolutionException;
 import dev.fiz.bootstrap.antlr.FizParser;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 public class Details implements ToInternalName {
 
@@ -63,10 +64,9 @@ public class Details implements ToInternalName {
 	}
 
 	public InternalName resolveBaseTypeContext(FizParser.BasetypeContext ctx) throws SymbolResolutionException {
-		// TODO this doesn't provide compile time guarantees
-		// attempt to grab a basetype token by trying every basetype tokenID
+		int tokenID = ctx.getChild(TerminalNode.class, 0).getSymbol().getType();
 		for(final BaseType baseType : BaseType.values()) {
-			if(ctx.getToken(baseType.tokenID, 0) != null) {
+			if(baseType.tokenID == tokenID) {
 				return baseType.toInternalName();
 			}
 		}
