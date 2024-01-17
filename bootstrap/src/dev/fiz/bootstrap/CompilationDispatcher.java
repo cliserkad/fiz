@@ -133,6 +133,9 @@ public class CompilationDispatcher implements CommonText {
 		}
 		try {
 			writeAndVerify(units);
+		} catch(CheckedIllegalArgumentException badFileTarget) {
+			System.err.println(badFileTarget.getMessage());
+			badFileTarget.printStackTrace();
 		} catch(IOException e) {
 			System.err.println("Failed to write .class file:");
 			System.err.println(e.getMessage());
@@ -152,7 +155,7 @@ public class CompilationDispatcher implements CommonText {
 	 * @throws IOException            when a unit can't be written
 	 * @throws ClassNotFoundException when a unit is invalid
 	 */
-	public void writeAndVerify(final BestList<CompilationUnit> units) throws IOException, ClassNotFoundException {
+	public void writeAndVerify(final BestList<CompilationUnit> units) throws IOException, ClassNotFoundException, CheckedIllegalArgumentException {
 		for(CompilationUnit unit : units) {
 			unit.write();
 			getClassLoader().loadClass(unit.getClazz().fullName());

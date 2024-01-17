@@ -2,7 +2,7 @@ package dev.fiz.bootstrap.names;
 
 import dev.fiz.bootstrap.CompilationUnit;
 import dev.fiz.bootstrap.MethodHeader;
-import dev.fiz.bootstrap.UnimplementedException;
+import dev.fiz.bootstrap.SymbolResolutionException;
 import dev.fiz.bootstrap.antlr.FizParser;
 
 public class Details implements ToInternalName {
@@ -42,37 +42,35 @@ public class Details implements ToInternalName {
 		this(DEFAULT_NAME);
 	}
 
-	public Details(final FizParser.DetailsContext ctx, final CompilationUnit unit) throws Exception {
+	public Details(final FizParser.DetailsContext ctx, final CompilationUnit unit) throws SymbolResolutionException {
 		String name = ctx.ID().getText();
 
-		InternalName type = null;
+		final InternalName type;
 		if(ctx.type().basetype() != null) {
-			// TODO this doesn't provide compile time guarantees
-			// attempt to grab a basetype token by trying every basetype tokenID
-			for(final BaseType baseType : BaseType.values()) {
-				if(ctx.type().basetype().getToken(baseType.tokenID, 0) != null) {
-					type = baseType.toInternalName();
-					break;
-				}
-			}
-			if(type == null)
-				throw new UnimplementedException("Couldn't recognize basetype");
+			type = resolveBaseTypeContext(ctx.type().basetype());
 		} else {
 			type = unit.resolveAgainstImports(ctx.type().getText());
-			if(type == null)
-				throw new IllegalArgumentException("Couldn't recognize type");
 		}
 
 		if(ctx.type().BRACE_OPEN() != null) {
-			int dimensions = 0;
-			for(int i = 0; i < ctx.type().BRACE_OPEN().size(); i++)
-				dimensions++;
-			type = type.toArray(dimensions);
+			this.type = type.toArray(ctx.type().BRACE_OPEN().size());
+		} else {
+			this.type = type;
 		}
 
 		this.name = name;
-		this.type = type;
 		this.mutable = ctx.MUTABLE() != null;
+	}
+
+	public InternalName resolveBaseTypeContext(FizParser.BasetypeContext ctx) throws SymbolResolutionException {
+		// TODO this doesn't provide compile time guarantees
+		// attempt to grab a basetype token by trying every basetype tokenID
+		for(final BaseType baseType : BaseType.values()) {
+			if(ctx.getToken(baseType.tokenID, 0) != null) {
+				return baseType.toInternalName();
+			}
+		}
+		throw new SymbolResolutionException("Couldn't resolve basetype " + ctx.getText());
 	}
 
 	public Details withName(final String name) {

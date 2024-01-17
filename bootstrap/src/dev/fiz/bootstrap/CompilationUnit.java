@@ -144,16 +144,23 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 		return tree;
 	}
 
-	public File write(File destination) throws IOException {
+	/**
+	 * Writes the class out to the target file, checking that the file name matches the class name.
+	 *
+	 * @throws IOException                     file is not writable
+	 * @throws CheckedIllegalArgumentException file name does not match class name
+	 */
+	public File write(final File target) throws IOException, CheckedIllegalArgumentException {
 		cw.visitEnd();
-		if(destination == null)
+		if(target == null)
 			write();
 
 		// check input file name
 		if(sourceFile != null && !sourceFile.getName().replace(".fiz", "").equalsIgnoreCase(clazz.name))
-			throw new IllegalArgumentException(INCORRECT_FILE_NAME + " file:" + sourceFile.getName() + " class:" + clazz.name);
+			throw new CheckedIllegalArgumentException(sourceFile.getName(), INCORRECT_FILE_NAME + " class:" + clazz.name);
 
-		destination = new File(destination, clazz.qualifiedName() + ".class");
+		final File destination;
+		destination = new File(target, clazz.qualifiedName() + ".class");
 		destination.getParentFile().mkdirs();
 		destination.createNewFile();
 
@@ -161,13 +168,15 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 		return destination;
 	}
 
-	public File write() throws IOException {
+	public File write() throws IOException, CheckedIllegalArgumentException {
 		if(sourceFile == null)
 			throw new NullPointerException("write() without params in CompilationUnit if the unit wasn't created with a file.");
-		return write(outputDir);
+		// write(File) was made pure, but this preserves the side effect of setting outputDir to its actually used value
+		outputDir = write(outputDir);
+		return outputDir;
 	}
 
-	public InternalName resolveAgainstImports(String classname) {
+	public InternalName resolveAgainstImports(String classname) throws SymbolResolutionException {
 		final InternalName result = resolve(classname);
 		if(result != null)
 			return result;
@@ -175,7 +184,7 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 			StringBuilder available = new StringBuilder();
 			for(InternalName name : imports)
 				available.append(name.nameString()).append("\n");
-			throw new IllegalArgumentException("Couldn't recognize type: " + classname + "\nAvailable classes:\n" + available);
+			throw new SymbolResolutionException("Couldn't recognize type: " + classname + "\nAvailable classes:\n" + available);
 		}
 	}
 
@@ -276,7 +285,7 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 				if(!fields().contains(field))
 					fields().put(field, ctx);
 				else
-					throw new IllegalArgumentException("The field named " + details.name + " was already declared within " + getClazz());
+					throw new CheckedIllegalArgumentException(details.name, "The field name was already declared within " + getClazz());
 			} catch(Exception e) {
 				throw new IllegalArgumentException("Couldn't determine the name, type and mutability of a field at " + ctx.getStart().getLine() + ":" + ctx.getStart().getCharPositionInLine());
 			}

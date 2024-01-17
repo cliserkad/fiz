@@ -58,9 +58,9 @@ public abstract class AnyOf<A, B, C> {
 		return getValue().toString();
 	}
 
-	private static void failIfNull(Object o) throws IllegalArgumentException {
+	private static void failIfNull(Object o) throws NullPointerException {
 		if(o == null)
-			throw new IllegalArgumentException("value cannot be null");
+			throw new NullPointerException("value cannot be null");
 	}
 
 	public static final class ElementA<A, B, C> extends AnyOf<A, B, C> {
