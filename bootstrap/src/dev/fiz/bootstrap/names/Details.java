@@ -45,28 +45,18 @@ public class Details implements ToInternalName {
 	public Details(final FizParser.DetailsContext ctx, final CompilationUnit unit) throws Exception {
 		String name = ctx.ID().getText();
 
-		InternalName type;
+		InternalName type = null;
 		if(ctx.type().basetype() != null) {
-			if(ctx.type().basetype().BOOLEAN() != null)
-				type = InternalName.BOOLEAN;
-			else if(ctx.type().basetype().BYTE() != null)
-				type = InternalName.BYTE;
-			else if(ctx.type().basetype().SHORT() != null)
-				type = InternalName.SHORT;
-			else if(ctx.type().basetype().CHAR() != null)
-				type = InternalName.CHAR;
-			else if(ctx.type().basetype().INT() != null)
-				type = InternalName.INT;
-			else if(ctx.type().basetype().FLOAT() != null)
-				type = InternalName.FLOAT;
-			else if(ctx.type().basetype().LONG() != null)
-				type = InternalName.LONG;
-			else if(ctx.type().basetype().DOUBLE() != null)
-				type = InternalName.DOUBLE;
-			else if(ctx.type().basetype().STRING() != null)
-				type = InternalName.STRING;
-			else
-				throw new UnimplementedException(CommonText.SWITCH_BASETYPE);
+			// TODO this doesn't provide compile time guarantees
+			// attempt to grab a basetype token by trying every basetype tokenID
+			for(final BaseType baseType : BaseType.values()) {
+				if(ctx.type().basetype().getToken(baseType.tokenID, 0) != null) {
+					type = baseType.toInternalName();
+					break;
+				}
+			}
+			if(type == null)
+				throw new UnimplementedException("Couldn't recognize basetype");
 		} else {
 			type = unit.resolveAgainstImports(ctx.type().getText());
 			if(type == null)
@@ -131,8 +121,7 @@ public class Details implements ToInternalName {
 
 	@Override
 	public boolean equals(Object object) {
-		if(object instanceof Details) {
-			final Details other = (Details) object;
+		if(object instanceof Details other) {
 			return name.equals(other.name) && type.equals(other.type) && mutable == other.mutable;
 		} else
 			return false;

@@ -1,34 +1,37 @@
 package dev.fiz.bootstrap.names;
 
+import dev.fiz.bootstrap.antlr.FizParser;
 import dev.fiz.bootstrap.ir.Literal;
 import org.objectweb.asm.Opcodes;
 
 public enum BaseType implements ToInternalName {
 
-	BOOLEAN('Z', Opcodes.T_BOOLEAN, boolean.class, Boolean.class),
-	BYTE('B', Opcodes.T_BYTE, byte.class, Byte.class),
-	SHORT('S', Opcodes.T_SHORT, short.class, Short.class),
-	CHAR('C', Opcodes.T_CHAR, char.class, Character.class),
-	INT('I', Opcodes.T_INT, int.class, Integer.class),
-	FLOAT('F', Opcodes.T_FLOAT, float.class, Float.class),
-	LONG('J', Opcodes.T_LONG, long.class, Long.class),
-	DOUBLE('D', Opcodes.T_DOUBLE, double.class, Double.class),
-	STRING("Ljava/lang/String;", 0, String.class, String.class);
+	BOOLEAN('Z', Opcodes.T_BOOLEAN, boolean.class, Boolean.class, FizParser.BOOLEAN),
+	BYTE('B', Opcodes.T_BYTE, byte.class, Byte.class, FizParser.BYTE),
+	SHORT('S', Opcodes.T_SHORT, short.class, Short.class, FizParser.SHORT),
+	CHAR('C', Opcodes.T_CHAR, char.class, Character.class, FizParser.CHAR),
+	INT('I', Opcodes.T_INT, int.class, Integer.class, FizParser.INT),
+	FLOAT('F', Opcodes.T_FLOAT, float.class, Float.class, FizParser.FLOAT),
+	LONG('J', Opcodes.T_LONG, long.class, Long.class, FizParser.LONG),
+	DOUBLE('D', Opcodes.T_DOUBLE, double.class, Double.class, FizParser.DOUBLE),
+	STRING("Ljava/lang/String;", 0, String.class, String.class, FizParser.STRING);
 
 	public final String rep;
 	public final int id;
 	public final Class<?> primitiveClass;
 	public final Class<?> wrapperClass;
+	public final int tokenID;
 
-	BaseType(String rep, int id, Class<?> primitiveClass, Class<?> wrapperClass) {
+	BaseType(String rep, int id, Class<?> primitiveClass, Class<?> wrapperClass, int tokenID) {
 		this.rep = rep;
 		this.id = id;
 		this.primitiveClass = primitiveClass;
 		this.wrapperClass = wrapperClass;
+		this.tokenID = tokenID;
 	}
 
-	BaseType(char rep, int id, Class<?> primitiveClass, Class<?> wrapperClass) {
-		this("" + rep, id, primitiveClass, wrapperClass);
+	BaseType(char rep, int id, Class<?> primitiveClass, Class<?> wrapperClass, int tokenID) {
+		this("" + rep, id, primitiveClass, wrapperClass, tokenID);
 	}
 
 	public static boolean isBaseType(final Object value) {
@@ -64,6 +67,17 @@ public enum BaseType implements ToInternalName {
 
 	public static BaseType matchValue(Object value) {
 		return matchClass(value.getClass());
+	}
+
+	public static boolean isBaseTypeToken(final int tokenID) {
+		return matchParserToken(tokenID) != null;
+	}
+
+	public static BaseType matchParserToken(final int tokenID) throws IllegalArgumentException {
+		for(final BaseType baseType : values())
+			if(baseType.tokenID == tokenID)
+				return baseType;
+		return null;
 	}
 
 	public boolean isIntInternally() {
