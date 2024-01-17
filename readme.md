@@ -1,8 +1,8 @@
 # fiz
 
-A JVM language built for simplicity and usability.
-[fiz.dev](https://fiz.dev)
-[repo](https://github.com/cliserkad/fiz)
+A JVM language built for simplicity and usability.  
+[fiz.dev](https://fiz.dev)  
+[repo](https://github.com/cliserkad/fiz)  
 
 # Installation
 

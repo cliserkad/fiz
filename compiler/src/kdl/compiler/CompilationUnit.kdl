@@ -1,9 +1,0 @@
-path fiz.compiler
-
-use java.io.File
-
-type CompilationUnit {
-    File input
-
-
-}

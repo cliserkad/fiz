@@ -1,0 +1,11 @@
+package dev.fiz.compiler
+
+import {
+    java.io.File
+}
+
+type CompilationUnit {
+    File input
+
+
+}
