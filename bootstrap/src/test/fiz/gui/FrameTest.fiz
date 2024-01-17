@@ -1,6 +1,8 @@
 path test.fiz.gui
 
-use javax.swing.JFrame
+import {
+    javax.swing.JFrame
+}
 
 type FrameTest {
   main {

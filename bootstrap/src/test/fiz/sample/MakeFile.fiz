@@ -1,7 +1,9 @@
 path test.fiz.sample
 
-use java.io.File
-use test.fiz.sample.FileUtil
+import {
+    java.io.File
+    test.fiz.sample.FileUtil
+}
 
 type MakeFile {
   main {

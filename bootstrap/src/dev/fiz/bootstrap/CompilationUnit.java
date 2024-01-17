@@ -364,9 +364,10 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 	}
 
 	@Override
-	public void enterUse(final FizParser.UseContext ctx) {
+	public void enterImports(final FizParser.ImportsContext ctx) {
 		if(pass == 1) {
-			addImport(ctx.getText().substring(3));
+			for(FizParser.AddressableContext addressable : ctx.addressable())
+				addImport(addressable.getText());
 		}
 	}
 

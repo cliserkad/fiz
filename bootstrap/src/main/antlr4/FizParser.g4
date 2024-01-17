@@ -60,9 +60,9 @@ returnStatement: RETURN expression?;
 type: (basetype | ID) (BRACE_OPEN BRACE_CLOSE)*;
 basetype: BOOLEAN | BYTE | SHORT | CHAR | INT | FLOAT | LONG | DOUBLE | STRING;
 
-source: path? use* clazz EOF;
+source: path? imports? clazz EOF;
 path: PATH addressable;
-use: USE addressable;
+imports: IMPORT BODY_OPEN addressable+ BODY_CLOSE;
 clazz: TYPE ID BODY_OPEN (constantDef | fieldDef | main | methodDefinition)* BODY_CLOSE;
 constantDef: CONST ID SET value;
 fieldDef: variableDeclaration;

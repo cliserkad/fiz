@@ -26,7 +26,7 @@ R_IF: 'if';
 R_NULL: 'null';
 SIZE: 'size';
 TYPE: 'type';
-USE: 'use';
+IMPORT: 'import';
 WHILE: 'while';
 
 // base types

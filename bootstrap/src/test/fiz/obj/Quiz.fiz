@@ -1,7 +1,9 @@
 path test.fiz.obj
 
-use java.util.Scanner
-use java.lang.System
+import {
+    java.util.Scanner
+    java.lang.System
+}
 
 type Quiz {
   i32~ score= 0
