@@ -12,9 +12,9 @@ The syntax looks like this:
 Example:
 ```fiz
 {
-    i32 a = 10;
-    a += 5;
-    assert a == 15;
+    i32 a = 10
+    a += 5
+    assert a == 15
 }
 ```
 
@@ -62,7 +62,7 @@ ReturnType methodName(ParameterType1 parameterName = defaultValue, ParameterType
 Example:
 ```fiz
 i32 add(i32 a, i32 b) {
-    return a + b;
+    return a + b
 }
 ```
 If there is no return type, or the method returns `void`, the return type is omitted.
@@ -77,9 +77,9 @@ while condition {
 ```
 Example:
 ```fiz
-i32 a = 0;
+i32 a = 0
 while a < 5 {
-    a += 2;
+    a += 2
 }
 ```
 
@@ -87,14 +87,14 @@ while a < 5 {
 ```fiz
 do {
     // some code here
-} while condition;
+} while condition
 ```
 Example:
 ```fiz
-i32 a = 0;
+i32 a = 0
 do {
-    a += 2;
-} while a < 5;
+    a += 2
+} while a < 5
 ```
 
 ## Imports
