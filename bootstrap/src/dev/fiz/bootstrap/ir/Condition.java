@@ -59,9 +59,20 @@ public class Condition {
 
 	public static Condition parseCondition(FizParser.ConditionContext ctx, Actor actor) throws Exception {
 		if(ctx.expression().size() > 1)
-			return new Condition(new Expression(ctx.expression(0), actor), new Expression(ctx.expression(1), actor), Comparator.match(ctx.comparator()));
+			return new Condition(Expression.parseExpressionContext(ctx.expression(0), actor), Expression.parseExpressionContext(ctx.expression(1), actor), Comparator.match(ctx.comparator()));
 		else
-			return new Condition(new Expression(ctx.expression(0), actor));
+			return new Condition(Expression.parseExpressionContext(ctx.expression(0), actor));
+	}
+
+	public String toString() {
+		StringBuilder bldr = new StringBuilder();
+		bldr.append("Condition: {\n");
+		bldr.append("isPositive: ").append(positive).append("\n");
+		bldr.append("a  : ").append(a).append("\n");
+		bldr.append("cmp: ").append(cmp).append("\n");
+		bldr.append("b  : ").append(b).append("\n");
+		bldr.append("}");
+		return bldr.toString();
 	}
 
 }

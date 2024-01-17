@@ -51,7 +51,7 @@ public interface Pushable extends ToInternalName {
 			else
 				throw new SymbolResolutionException(id);
 		} else if(val.indexAccess() != null)
-			return new IndexAccess(actor.unit.getLocalVariable(val.indexAccess().ID().getText()), new Expression(val.indexAccess().expression(), actor));
+			return new IndexAccess(actor.unit.getLocalVariable(val.indexAccess().ID().getText()), Expression.parseExpressionContext(val.indexAccess().expression(), actor));
 		else if(val.subSequence() != null)
 			return new SubSequence(val.subSequence(), actor);
 		else if(val.arrayLength() != null)

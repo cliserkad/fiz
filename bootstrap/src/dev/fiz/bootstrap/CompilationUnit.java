@@ -45,6 +45,10 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 	private CustomClass clazz;
 	private boolean nameSet;
 	private String pkgName;
+	// FIXME: I'm exposing all of this pre tree stuff, but there is probably a better way to access the original text
+	public FizLexer lexer;
+	public FizParser parser;
+	public CommonTokenStream commonTokenStream;
 	private ParseTree tree;
 
 	// pass 1 collects imports, classname, and constant names, methodNames
@@ -124,13 +128,13 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 	private ParseTree makeParseTree(String input) throws Exception {
 		SyntaxErrorHandler syntaxErrorHandler = new SyntaxErrorHandler(this);
 
-		final FizLexer lex = new FizLexer(CharStreams.fromString(input));
-		lex.removeErrorListeners();
-		lex.addErrorListener(syntaxErrorHandler);
+		lexer = new FizLexer(CharStreams.fromString(input));
+		lexer.removeErrorListeners();
+		lexer.addErrorListener(syntaxErrorHandler);
 
-		final CommonTokenStream tokens = new CommonTokenStream(lex, 0);
+		commonTokenStream = new CommonTokenStream(lexer);
 
-		final FizParser parser = new FizParser(tokens);
+		parser = new FizParser(commonTokenStream);
 		parser.removeErrorListeners();
 		parser.addErrorListener(syntaxErrorHandler);
 
@@ -319,14 +323,14 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 		if(ctx.operatorAssign() != null)
 			resultType = new Expression(target, Pushable.parse(actor, ctx.operatorAssign().value()), Operator.match(ctx.operatorAssign().operator())).pushType(actor);
 		else
-			resultType = new Expression(ctx.expression(), actor).pushType(actor);
+			resultType = Expression.parseExpressionContext(ctx.expression(), actor).pushType(actor);
 		target.assign(resultType, actor);
 	}
 
 	private void consumeVariableDeclaration(FizParser.VariableDeclarationContext ctx, Actor actor) throws Exception {
 		final Variable target = getCurrentScope().newVariable(new Details(ctx.details(), this));
 		if(ctx.SET() != null) {
-			target.assign(new Expression(ctx.expression(), actor).pushType(actor), actor);
+			target.assign(Expression.parseExpressionContext(ctx.expression(), actor).pushType(actor), actor);
 		} else
 			target.assignDefault(actor);
 	}
@@ -346,7 +350,7 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 			if(ctx.returnStatement().expression() == null)
 				rv = null;
 			else
-				rv = new ReturnValue(ExpressionHandler.compute(new Expression(ctx.returnStatement().expression(), actor), actor));
+				rv = new ReturnValue(ExpressionHandler.compute(Expression.parseExpressionContext(ctx.returnStatement().expression(), actor), actor));
 			actor.writeReturn(rv);
 		} else
 			throw new UnimplementedException("A type of statement couldn't be interpreted " + ctx.getText());
@@ -553,6 +557,11 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 		return clazz;
 	}
 
+	public File getSourceFile() {
+		// copy and return
+		return new File(sourceFile.getAbsolutePath());
+	}
+
 	public MethodVisitor defineMethod(MethodHeader md) {
 		if(methods().contains(md)) {
 			final MethodVisitor mv = cw.visitMethod(md.access, md.name, md.descriptor(), null, null);
@@ -595,8 +604,8 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 				// push "this"
 				actor.visitVarInsn(ALOAD, 0);
 				if(fields().get(f).variableDeclaration().SET() != null) {
-					final Expression xpr = new Expression(fields().get(f).variableDeclaration().expression(), actor);
-					xpr.push(actor);
+					final Pushable value = Expression.parseExpressionContext(fields().get(f).variableDeclaration().expression(), actor);
+					value.pushType(actor);
 				} else {
 					if(f.type.isBaseType())
 						f.type.toBaseType().getDefaultValue().push(actor);

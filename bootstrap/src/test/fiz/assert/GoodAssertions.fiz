@@ -1,0 +1,15 @@
+package dev.fiz.test.assertions
+
+type GoodAssertions {
+
+    main {
+        i32 factorA = 5
+        i32 factorB = 6
+        i32 product = 31
+
+        // these assertions should fail and produce nice output
+        assert factorA * factorB == product
+        assert factorA * factorB == 29 + 9
+        assert factorA * factorB != 30
+    }
+}

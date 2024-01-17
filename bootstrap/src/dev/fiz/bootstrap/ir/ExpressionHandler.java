@@ -16,22 +16,25 @@ public interface ExpressionHandler extends CommonText {
 	MethodHeader SB_APPEND = new MethodHeader(new InternalName(StringBuilder.class), "append", MethodHeader.toParamList(new InternalName(String.class)), new ReturnValue(new InternalName(StringBuilder.class)), ACC_PUBLIC);
 	MethodHeader SB_TO_STRING = new MethodHeader(new InternalName(StringBuilder.class), "toString", null, ReturnValue.STRING, ACC_PUBLIC);
 
+	public static InternalName compute(final Pushable p, final Actor actor) throws Exception {
+		if(p instanceof Expression xpr)
+			return compute(xpr, actor);
+		else
+			return p.pushType(actor);
+	}
+
 	public static InternalName compute(final Expression xpr, final Actor actor) throws Exception {
 		final Pushable res = xpr.a;
 		final Pushable calc = xpr.b;
 		final Operator opr = xpr.opr;
 
-		if(xpr.isSingleValue()) {
-			return res.pushType(actor);
-		} else {
-			return switch(res.toBaseType()) {
-				case BOOLEAN, BYTE, SHORT, CHAR, INT -> computeInt(res, calc, opr, actor).toInternalName();
-				case FLOAT -> computeFloat(res, calc, opr, actor).toInternalName();
-				case LONG -> computeLong(res, calc, opr, actor).toInternalName();
-				case DOUBLE -> computeDouble(res, calc, opr, actor).toInternalName();
-				case STRING -> computeString(res, calc, opr, actor).toInternalName();
-			};
-		}
+		return switch(res.toBaseType()) {
+			case BOOLEAN, BYTE, SHORT, CHAR, INT -> computeInt(res, calc, opr, actor).toInternalName();
+			case FLOAT -> computeFloat(res, calc, opr, actor).toInternalName();
+			case LONG -> computeLong(res, calc, opr, actor).toInternalName();
+			case DOUBLE -> computeDouble(res, calc, opr, actor).toInternalName();
+			case STRING -> computeString(res, calc, opr, actor).toInternalName();
+		};
 	}
 
 	static BaseType computeDouble(Pushable res1, Pushable res2, Operator opr, Actor actor) throws Exception {

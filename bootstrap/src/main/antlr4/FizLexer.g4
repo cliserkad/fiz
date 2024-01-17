@@ -4,12 +4,17 @@ lexer grammar FizLexer;
 package dev.fiz.bootstrap.antlr;
 }
 
-// skip over comments in lexer
-COMMENT: '//' .*? '\n' -> channel(HIDDEN);
-BLOCK_COMMENT: '/*' .*? '*/' -> channel(HIDDEN);
+channels {
+    COMMENTS,
+    WHITESPACE
+}
 
-// skip over whitespace
-WS : [ \t\r\n]+ -> skip;
+// send comments to separate channel
+COMMENT: '//' .*? '\n' -> channel(COMMENTS);
+BLOCK_COMMENT: '/*' .*? '*/' -> channel(COMMENTS);
+
+// send whitespace to separate channel
+WS : [ \t\r\n]+ -> channel(WHITESPACE);
 
 QUOTE: '"';
 STRING_LIT: QUOTE (~["\\] | '\\' .)* QUOTE;

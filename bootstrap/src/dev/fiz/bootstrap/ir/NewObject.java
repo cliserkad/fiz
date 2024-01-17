@@ -21,10 +21,10 @@ public class NewObject extends BasePushable implements Opcodes {
 			throw new IllegalArgumentException("Can't instantiate a base type with a constructor. Use a literal instead");
 
 		arguments = new BestList<>();
-		if(ctx.parameterSet() != null && ctx.parameterSet().expression().size() > 0) {
+		if(ctx.parameterSet() != null && !ctx.parameterSet().expression().isEmpty()) {
 			for(FizParser.ExpressionContext xpr : ctx.parameterSet().expression()) {
-				Expression xpr1 = new Expression(xpr, actor);
-				arguments.add(xpr1);
+				Pushable pushable = Expression.parseExpressionContext(xpr, actor);
+				arguments.add(pushable);
 			}
 		}
 	}

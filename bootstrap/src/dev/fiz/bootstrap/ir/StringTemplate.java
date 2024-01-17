@@ -16,12 +16,14 @@ public class StringTemplate extends BasePushable {
 		elements = new ArrayList<>();
 	}
 
-	public void add(String s) {
+	public StringTemplate add(String s) {
 		elements.add(new Literal<>(s));
+		return this;
 	}
 
-	public void add(Pushable pushable) {
+	public StringTemplate add(Pushable pushable) {
 		elements.add(pushable);
+		return this;
 	}
 
 	public boolean isTextOnly() {

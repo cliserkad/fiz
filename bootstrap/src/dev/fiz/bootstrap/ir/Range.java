@@ -12,11 +12,11 @@ public class Range {
 
 	public Range(final FizParser.RangeContext ctx, final Actor actor) throws Exception {
 		if(ctx.expression().size() > 1)
-			min = new Expression(ctx.expression(0), actor);
+			min = Expression.parseExpressionContext(ctx.expression(0), actor);
 		else
 			min = new Literal<>(DEFAULT_MIN);
 
-		max = new Expression(ctx.expression(ctx.expression().size() - 1), actor);
+		max = Expression.parseExpressionContext(ctx.expression(ctx.expression().size() - 1), actor);
 	}
 
 }

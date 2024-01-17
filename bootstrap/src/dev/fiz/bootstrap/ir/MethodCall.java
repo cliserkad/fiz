@@ -55,10 +55,10 @@ public class MethodCall extends BasePushable implements CommonText {
 
 	public static BestList<Pushable> parseArguments(FizParser.ParameterSetContext ctx, Actor actor) throws Exception {
 		final BestList<Pushable> arguments = new BestList<>();
-		if(ctx != null && ctx.expression().size() > 0) {
+		if(ctx != null && !ctx.expression().isEmpty()) {
 			for(FizParser.ExpressionContext xpr : ctx.expression()) {
-				Expression xpr1 = new Expression(xpr, actor);
-				arguments.add(xpr1);
+				Pushable pushable = Expression.parseExpressionContext(xpr, actor);
+				arguments.add(pushable);
 			}
 		}
 		return arguments;

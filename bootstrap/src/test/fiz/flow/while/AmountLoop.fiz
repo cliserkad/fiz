@@ -1,10 +1,10 @@
 type AmountLoop {
-  const ASSERTION_PASS = "This message should be printed 5 times"
 
   main {
     i32~ a
     while a < 5 {
       assert true
+      println("pass")
       a += 1
     }
   }
