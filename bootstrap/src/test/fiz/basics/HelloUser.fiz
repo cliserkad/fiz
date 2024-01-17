@@ -1,4 +1,3 @@
-// author= Bryan Johnson
 type HelloUser {
   main {
     print("hello ")

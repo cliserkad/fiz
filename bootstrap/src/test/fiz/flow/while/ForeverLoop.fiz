@@ -1,4 +1,3 @@
-// author= Bryan Johnson
 type ForeverLoop {
   main {
     while true {

@@ -1,4 +1,3 @@
-// author= Bryan Johnson
 type IfArgGiven {
   const NO_ARG = "No argument given"
 

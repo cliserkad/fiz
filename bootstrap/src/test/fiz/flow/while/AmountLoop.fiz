@@ -1,4 +1,3 @@
-// author= Bryan Johnson
 type AmountLoop {
   const ASSERTION_PASS = "This message should be printed 5 times"
 

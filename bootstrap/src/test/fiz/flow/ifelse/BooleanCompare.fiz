@@ -1,4 +1,3 @@
-// author= Bryan Johnson
 type BooleanCompare {
   const GOOD = "hello from BooleanCompare"
   const FAIL = "This message was shown in error"

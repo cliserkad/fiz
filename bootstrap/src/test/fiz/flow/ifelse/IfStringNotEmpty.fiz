@@ -1,4 +1,3 @@
-// author= Bryan Johnson
 type IfStringNotEmpty {
   const GOOD= "hello from IfStringNotEmpty"
   const FAIL= "This message was shown in error"
