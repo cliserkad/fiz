@@ -8,7 +8,6 @@ import dev.fiz.bootstrap.names.CommonText;
 import dev.fiz.bootstrap.names.Details;
 import dev.fiz.bootstrap.names.InternalName;
 import dev.fiz.bootstrap.names.ReturnValue;
-import dev.fiz.bootstrap.ir.*;
 import dev.fiz.bootstrap.names.*;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -29,6 +28,7 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 	public static final int CONST_ACCESS = ACC_PUBLIC + ACC_STATIC + ACC_FINAL;
 	public static final String INCORRECT_FILE_NAME = "The input file name must match its class name.";
 	public static final int PASSES = 3;
+	public static final MethodHeader STRING_VALUE_OF = new MethodHeader(InternalName.STRING, "valueOf", null, ReturnValue.STRING, ACC_PUBLIC + ACC_STATIC);
 
 	// used to generate a numerical id
 	private static int unitCount = 0;
@@ -75,21 +75,20 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 	 * @param visitor Any MethodVisitor
 	 */
 	public static void convertToString(final InternalName name, final MethodVisitor visitor) {
-		MethodHeader stringValueOf;
-		if(name.isBaseType()) {
-			if(name.toBaseType() == BaseType.STRING)
-				return;
-			else {
-				InternalName actualName = name;
-				if(name.toBaseType() == BaseType.BYTE)
-					actualName = InternalName.INT;
-				else if(name.toBaseType() == BaseType.SHORT)
-					actualName = InternalName.INT;
-				stringValueOf = new MethodHeader(InternalName.STRING, "valueOf", MethodHeader.toParamList(actualName), ReturnValue.STRING, ACC_PUBLIC + ACC_STATIC);
-			}
-		} else
-			stringValueOf = new MethodHeader(InternalName.STRING, "valueOf", MethodHeader.toParamList(InternalName.OBJECT), ReturnValue.STRING, ACC_PUBLIC + ACC_STATIC);
-		visitor.visitMethodInsn(INVOKESTATIC, stringValueOf.owner(), stringValueOf.name, stringValueOf.descriptor(), false);
+		if(name.toBaseType() == BaseType.STRING)
+			return;
+
+		final InternalName passableType;
+		if(name.isBaseType())
+			// treat i8 and i16 as i32
+			passableType = switch(name.toBaseType()) {
+				case BYTE, SHORT -> InternalName.INT;
+				default -> name;
+			};
+		else
+			// treat all other types as generic objects
+			passableType = InternalName.OBJECT;
+		STRING_VALUE_OF.withParams(MethodHeader.toParamList(passableType)).invoke(visitor);
 	}
 
 	public boolean pass() throws Exception {

@@ -71,6 +71,10 @@ public class MethodHeader implements CommonText, ToInternalName {
 		this.access = method.getModifiers();
 	}
 
+	public MethodHeader withParams(final BestList<Param> params) {
+		return new MethodHeader(owner, name, params, returns, access);
+	}
+
 	public MethodHeader withOwner(final CustomClass cc) {
 		return new MethodHeader(new InternalName(cc), name, params, returns, access);
 	}
