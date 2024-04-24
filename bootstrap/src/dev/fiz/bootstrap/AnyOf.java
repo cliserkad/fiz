@@ -58,7 +58,7 @@ public abstract class AnyOf<A, B, C> {
 		return getValue().toString();
 	}
 
-	private static void failIfNull(Object o) throws NullPointerException {
+	public static void failIfNull(Object o) throws NullPointerException {
 		if(o == null)
 			throw new NullPointerException("value cannot be null");
 	}

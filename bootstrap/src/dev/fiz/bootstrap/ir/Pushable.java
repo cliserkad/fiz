@@ -4,6 +4,7 @@ import dev.fiz.bootstrap.Actor;
 import dev.fiz.bootstrap.SymbolResolutionException;
 import dev.fiz.bootstrap.UnimplementedException;
 import dev.fiz.bootstrap.antlr.FizParser;
+import dev.fiz.bootstrap.names.Details;
 import dev.fiz.bootstrap.names.InternalName;
 import dev.fiz.bootstrap.names.ToInternalName;
 
@@ -39,7 +40,36 @@ public interface Pushable extends ToInternalName {
 	 * @return A Resolvable whose actual type corresponds to the symbol
 	 * @throws UnimplementedException thrown if missing a symbol from the grammar
 	 */
-	public static Pushable parse(final Actor actor, final FizParser.ValueContext val) throws Exception {
+	public static Pushable parse(final Actor actor, final FizParser.ComponentContext val) throws Exception {
+		// FIXME copied code from Assignable
+		final FizParser.ExpressionContext targetExpression = ctx.expression(0);
+
+		if(ctx.expression() == null) {
+			Field field = actor.unit.getEquivalentField(new InstanceField(ctx.component().ID().getText(), null, false, actor.unit.getClazz()));
+		} else {
+
+		}
+
+		if(targetExpression.expression() == null) {
+			final String varname = targetExpression.component().ID().getText();
+			if(actor.unit.getCurrentScope().contains(varname))
+				return actor.unit.getLocalVariable(varname);
+			else
+				return actor.unit.getEquivalentField(new InstanceField(varname, null, false, actor.unit.getClazz()));
+		} else {
+
+			if(address.ID().size() > 1) {
+				StaticField field = null;
+				for(int i = 0; i < address.ID().size(); i++) {
+					if(field == null)
+
+					else
+					field = actor.unit.getEquivalentField(new InstanceField(address.ID(i).getText(), null, false, field));
+				}
+				return field;
+			}
+		}
+
 		if(val.literal() != null)
 			return Literal.parseLiteral(val.literal(), actor);
 		else if(val.addressable() != null && val.addressable().ID().size() == 1) {
@@ -67,14 +97,7 @@ public interface Pushable extends ToInternalName {
 			else
 				return new MethodCall(mtd, actor);
 		} else if(val.addressable().ID().size() > 1) {
-			// FIXME dirty way of getting suspected classname and varname
-			final String className = val.addressable().ID(0).getText();
-			final String varname = val.addressable().ID(1).getText();
-			final StaticField field = actor.unit.fields().equivalentKey(new StaticField(varname, actor.unit.resolveAgainstImports(className)));
-			if(field != null)
-				return field;
-			else
-				throw new SymbolResolutionException(className + "." + varname + "\nFull text: " + val.getText());
+
 		} else
 			throw new UnimplementedException("a type of Pushable wasn't parsed correctly\n The input text was \"" + val.getText() + "\"");
 	}

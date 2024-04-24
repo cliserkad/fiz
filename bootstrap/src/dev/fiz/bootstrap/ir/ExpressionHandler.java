@@ -1,9 +1,6 @@
 package dev.fiz.bootstrap.ir;
 
-import dev.fiz.bootstrap.Actor;
-import dev.fiz.bootstrap.CompilationUnit;
-import dev.fiz.bootstrap.IncompatibleTypeException;
-import dev.fiz.bootstrap.MethodHeader;
+import dev.fiz.bootstrap.*;
 import dev.fiz.bootstrap.names.BaseType;
 import dev.fiz.bootstrap.names.CommonText;
 import dev.fiz.bootstrap.names.InternalName;
@@ -12,9 +9,9 @@ import org.objectweb.asm.MethodVisitor;
 
 public interface ExpressionHandler extends CommonText {
 
-	public static final MethodHeader INIT_STRING_BUILDER = new MethodHeader(new InternalName(StringBuilder.class), MethodHeader.S_INIT, null, null, ACC_PUBLIC);
-	MethodHeader SB_APPEND = new MethodHeader(new InternalName(StringBuilder.class), "append", MethodHeader.toParamList(new InternalName(String.class)), new ReturnValue(new InternalName(StringBuilder.class)), ACC_PUBLIC);
-	MethodHeader SB_TO_STRING = new MethodHeader(new InternalName(StringBuilder.class), "toString", null, ReturnValue.STRING, ACC_PUBLIC);
+	MethodHeader INIT_STRING_BUILDER = new MethodHeader(InternalName.STRING_BUILDER, MethodHeader.S_INIT, null, null, ACC_PUBLIC);
+	MethodHeader SB_APPEND = new MethodHeader(InternalName.STRING_BUILDER, "append", MethodHeader.toParamList(InternalName.STRING), new ReturnValue(InternalName.STRING_BUILDER), ACC_PUBLIC);
+	MethodHeader SB_TO_STRING = new MethodHeader(InternalName.STRING_BUILDER, "toString", null, ReturnValue.STRING, ACC_PUBLIC);
 
 	public static InternalName compute(final Pushable p, final Actor actor) throws Exception {
 		if(p instanceof Expression xpr)
@@ -23,18 +20,28 @@ public interface ExpressionHandler extends CommonText {
 			return p.pushType(actor);
 	}
 
-	public static InternalName compute(final Expression xpr, final Actor actor) throws Exception {
-		final Pushable res = xpr.a;
+	static InternalName compute(final Expression xpr, final Actor actor) throws Exception {
+		final EitherOf<Pushable, InternalName> res = xpr.a;
 		final Pushable calc = xpr.b;
 		final Operator opr = xpr.opr;
 
-		return switch(res.toBaseType()) {
-			case BOOLEAN, BYTE, SHORT, CHAR, INT -> computeInt(res, calc, opr, actor).toInternalName();
-			case FLOAT -> computeFloat(res, calc, opr, actor).toInternalName();
-			case LONG -> computeLong(res, calc, opr, actor).toInternalName();
-			case DOUBLE -> computeDouble(res, calc, opr, actor).toInternalName();
-			case STRING -> computeString(res, calc, opr, actor).toInternalName();
-		};
+		return res.matchFallible(
+				(Pushable p) -> {
+					BaseType basetype = p.toBaseType();
+					switch(basetype) {
+							case BOOLEAN, BYTE, SHORT, CHAR, INT -> computeInt(p, calc, opr, actor);
+							case FLOAT -> computeFloat(p, calc, opr, actor);
+							case LONG -> computeLong(p, calc, opr, actor);
+							case DOUBLE -> computeDouble(p, calc, opr, actor);
+							case STRING -> computeString(p, calc, opr, actor);
+						};
+					return basetype.toInternalName();
+				},
+				(InternalName name) -> {
+					actor.visitFieldInsn(GETSTATIC, name.nameString(), "FIXME" , name.nameString());
+					return name;
+				}
+		);
 	}
 
 	static BaseType computeDouble(Pushable res1, Pushable res2, Operator opr, Actor actor) throws Exception {
@@ -44,6 +51,7 @@ public interface ExpressionHandler extends CommonText {
 			res1.push(actor);
 			res2.push(actor);
 			final int operatorInstruction = switch(opr) {
+				case ACCESS -> throw new UndefinedOperationException("Access operator not supported for f64");
 				case ADD -> DADD;
 				case SUB -> DSUB;
 				case MUL -> DMUL;
@@ -62,6 +70,7 @@ public interface ExpressionHandler extends CommonText {
 			res1.push(actor);
 			res2.push(actor);
 			final int operatorInstruction = switch(opr) {
+				case ACCESS -> throw new UndefinedOperationException("Access operator not supported for i64");
 				case ADD -> LADD;
 				case SUB -> LSUB;
 				case MUL -> LMUL;
@@ -80,6 +89,7 @@ public interface ExpressionHandler extends CommonText {
 			res1.push(actor);
 			res2.push(actor);
 			final int operatorInstruction = switch(opr) {
+				case ACCESS -> throw new UndefinedOperationException("Access operator not supported for f32");
 				case ADD -> FADD;
 				case SUB -> FSUB;
 				case MUL -> FMUL;
@@ -94,13 +104,13 @@ public interface ExpressionHandler extends CommonText {
 	/**
 	 * Puts two new StringBuilders on the stack
 	 */
-	public static void createStringBuilder(MethodVisitor visitor) {
+	static void createStringBuilder(MethodVisitor visitor) {
 		visitor.visitTypeInsn(NEW, new InternalName(StringBuilder.class).nameString());
 		visitor.visitInsn(DUP);
 		INIT_STRING_BUILDER.invoke(visitor);
 	}
 
-	public static BaseType computeString(Pushable res1, Pushable res2, Operator opr, Actor actor) throws Exception {
+	static BaseType computeString(Pushable res1, Pushable res2, Operator opr, Actor actor) throws Exception {
 		if(opr == Operator.ADD) {
 			createStringBuilder(actor);
 			res1.push(actor);
@@ -117,7 +127,7 @@ public interface ExpressionHandler extends CommonText {
 		return BaseType.STRING;
 	}
 
-	public static BaseType computeInt(Pushable res1, Pushable res2, Operator opr, Actor actor) throws Exception {
+	static BaseType computeInt(Pushable res1, Pushable res2, Operator opr, Actor actor) throws Exception {
 		if(res2.toBaseType() == BaseType.STRING)
 			throw new IncompatibleTypeException(BaseType.INT + INCOMPATIBLE + BaseType.STRING);
 		// under the hood booleans should be either 0 or 1
@@ -125,6 +135,7 @@ public interface ExpressionHandler extends CommonText {
 			res1.push(actor);
 			res2.push(actor);
 			final int operatorInstruction = switch(opr) {
+				case ACCESS -> throw new UndefinedOperationException("Access operator not supported for i32");
 				case ADD -> IADD;
 				case SUB -> ISUB;
 				case MUL -> IMUL;

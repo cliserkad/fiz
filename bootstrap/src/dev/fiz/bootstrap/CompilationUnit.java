@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CompilationUnit extends FizParserBaseListener implements Runnable, CommonText {
 
@@ -211,12 +212,20 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 		pass++;
 	}
 
-	public TrackedMap<Constant, FizParser.ConstantDefContext> constants() {
+	public Set<Constant> constants() {
 		return owner.constants;
 	}
 
-	public TrackedMap<StaticField, FizParser.FieldDefContext> fields() {
+	public Set<Field> fields() {
 		return owner.fields;
+	}
+
+	public Field getEquivalentField(final Field field) throws SymbolResolutionException {
+		for(Field f : fields()) {
+			if(f.equals(field))
+				return f;
+		}
+		throw new SymbolResolutionException("Couldn't find equivalent field for " + field)
 	}
 
 	public Set<MethodHeader> methods() {
@@ -234,7 +243,7 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 				addMethodDef(staticInit);
 				Actor actor = new Actor(defineMethod(staticInit), this);
 
-				for(Constant c : constants().keys()) {
+				for(Constant c : constants()) {
 					if(c.owner.equals(getClazz().toInternalName())) {
 						try {
 							final FizParser.ConstantDefContext cDef = constants().get(c);
@@ -253,7 +262,7 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 			}
 
 			for(StaticField f : fields().keys()) {
-				if(f.ownerType.equals(getClazz().toInternalName()) && f instanceof ObjectField) {
+				if(f.ownerType.equals(getClazz().toInternalName()) && f instanceof InstanceField) {
 					final FieldVisitor fv;
 					final Object defaultValue;
 					if(f.type.toBaseType() == BaseType.STRING)
@@ -284,7 +293,7 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 		if(getPass() == 1) {
 			try {
 				final Details details = new Details(ctx.variableDeclaration().details(), this);
-				final ObjectField field = new ObjectField(details, getClazz());
+				final InstanceField field = new InstanceField(details, getClazz());
 				if(!fields().contains(field))
 					fields().put(field, ctx);
 				else
@@ -302,7 +311,7 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 			final String name = ctx.ID().toString();
 			final Constant unsetConst = new Constant(name, InternalName.PLACEHOLDER, getClazz().toInternalName());
 			if(!constants().contains(unsetConst))
-				constants().put(unsetConst, ctx);
+				constants().add(unsetConst);
 			else
 				throw new IllegalArgumentException(unsetConst + " was already declared");
 		}
@@ -339,8 +348,6 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 			consumeVariableDeclaration(ctx.variableDeclaration(), actor);
 		} else if(ctx.assignment() != null) {
 			consumeAssignment(ctx.assignment(), actor);
-		} else if(ctx.methodCall() != null) {
-			consumeMethodCall(ctx.methodCall(), actor);
 		} else if(ctx.conditional() != null) {
 			// forward to the handler to partition code
 			ConditionalHandler.handle(ctx.conditional(), actor);
@@ -362,15 +369,17 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 
 	@Override
 	public void enterPackage(final FizParser.PackageContext ctx) {
-		if(pass == 1)
-			pkgName = ctx.addressable().getText();
+		if(pass == 1) {
+			System.out.println("Package: " + ctx.qualifiedName().getText());
+			pkgName = ctx.qualifiedName().getText();
+		}
 	}
 
 	@Override
 	public void enterImports(final FizParser.ImportsContext ctx) {
 		if(pass == 1) {
-			for(FizParser.AddressableContext addressable : ctx.addressable())
-				addImport(addressable.getText());
+			for(FizParser.QualifiedNameContext qualifiedName : ctx.qualifiedName())
+				addImport(qualifiedName.getText());
 		}
 	}
 
@@ -391,9 +400,9 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 		for(java.lang.reflect.Field field : clazz.getFields()) {
 			final Details details = new Details(field.getName(), new InternalName(field.getType()), (field.getModifiers() & ACC_FINAL) == ACC_FINAL);
 			if((field.getModifiers() & ACC_STATIC) == ACC_STATIC) {
-				fields().add(new StaticField(details, new InternalName(clazz)), null);
+				fields().add(new StaticField(details, new InternalName(clazz)));
 			} else {
-				fields().add(new ObjectField(details, new InternalName(clazz)), null);
+				fields().add(new InstanceField(details, new InternalName(clazz)));
 			}
 		}
 	}
@@ -405,75 +414,77 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 	@Override
 	public void enterMethodDefinition(final FizParser.MethodDefinitionContext ctx) {
 		try {
-			// parse name and return type
-			final Details details;
-			if(ctx.details() != null)
-				details = new Details(ctx.details(), this).filterName();
-			else
-				details = new Details(ctx.ID().getText(), null).filterName();
-			final ReturnValue rv = new ReturnValue(details.type);
+			 if(getPass() == 2 || getPass() == 3) {
+				 // parse name and return type
+				 final Details details;
+				 if(ctx.details() != null)
+					 details = new Details(ctx.details(), this).filterName();
+				 else
+					 details = new Details(ctx.ID().getText(), null).filterName();
+				 final ReturnValue rv = new ReturnValue(details.type);
 
-			// parse parameters
-			final BestList<Param> params = new BestList<>();
-			for(FizParser.ParamContext param : ctx.paramSet().param())
-				params.add(new Param(new Details(param.details(), this), param.value()));
+				 // parse parameters
+				 final BestList<Param> params = new BestList<>();
+				 for(FizParser.ParamContext param : ctx.paramSet().param())
+					 params.add(new Param(new Details(param.details(), this), param.value()));
 
-			// check if the method accesses any fields
-			final boolean initializer;
-			final int staticModifier;
-			if(details.name.equals(MethodHeader.S_INIT)) {
-				staticModifier = 0;
-				initializer = true;
-			} else {
-				if(ctx.paramSet().ID() == null)
-					staticModifier = ACC_STATIC;
-				else {
-					if(ctx.paramSet().ID().getText().equals("this"))
-						staticModifier = 0;
-					else
-						throw new IllegalArgumentException("Only \"this\" may be used as a non typed argument");
-				}
-				initializer = false;
-			}
+				 // check if the method accesses any fields
+				 final boolean initializer;
+				 final int staticModifier;
+				 if(details.name.equals(MethodHeader.S_INIT)) {
+					 staticModifier = 0;
+					 initializer = true;
+				 } else {
+					 if(ctx.paramSet().ID() == null)
+						 staticModifier = ACC_STATIC;
+					 else {
+						 if(ctx.paramSet().ID().getText().equals("this"))
+							 staticModifier = 0;
+						 else
+							 throw new IllegalArgumentException("Only \"this\" may be used as a non typed argument");
+					 }
+					 initializer = false;
+				 }
 
-			MethodHeader def = new MethodHeader(clazz.toInternalName(), details.name, params, rv, ACC_PUBLIC + staticModifier);
+				 final MethodHeader def = new MethodHeader(clazz.toInternalName(), details.name, params, rv, ACC_PUBLIC + staticModifier);
 
-			if(getPass() == 2) {
-				addMethodDef(def);
-			} else if(getPass() == 3) {
-				// define user specified method
-				final Actor actor = new Actor(defineMethod(def), this);
-				// instance of owning type will always occupy slot 0
-				if(staticModifier == 0)
-					getCurrentScope().newVariable("this", getClazz().toInternalName());
-				// parameters will always occupy the first few slots
-				for(Param param : params)
-					getCurrentScope().newVariable(param.name, param.type);
+				 if(getPass() == 2) {
+					 addMethodDef(def);
+				 } else if(getPass() == 3) {
+					 // define user specified method
+					 final Actor actor = new Actor(defineMethod(def), this);
+					 // instance of owning type will always occupy slot 0
+					 if(staticModifier == 0)
+						 getCurrentScope().newVariable("this", getClazz().toInternalName());
+					 // parameters will always occupy the first few slots
+					 for(Param param : params)
+						 getCurrentScope().newVariable(param.name, param.type);
 
-				if(initializer) {
-					// call Object.super(this);
-					actor.visitVarInsn(ALOAD, 0);
-					actor.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
-				}
+					 if(initializer) {
+						 // call Object.super(this);
+						 actor.visitVarInsn(ALOAD, 0);
+						 actor.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
+					 }
 
-				consumeBlock(ctx.block(), actor);
+					 consumeBlock(ctx.block(), actor);
 
-				getCurrentScope().end(ctx.stop.getLine(), actor, rv);
+					 getCurrentScope().end(ctx.stop.getLine(), actor, rv);
 
-				// add in helper methods for default values
-				for(Param param : params) {
-					if(param.defaultValue != null) {
-						final ReturnValue returnValue = new ReturnValue(param.toInternalName());
-						final MethodHeader defaultProvider = new MethodHeader(clazz.toInternalName(), details.name + "_" + param.name, null, returnValue, def.access + Opcodes.ACC_SYNTHETIC);
-						addMethodDef(defaultProvider);
-						final Actor defaultWriter = new Actor(defineMethod(defaultProvider), this);
-						Pushable.parse(actor, param.defaultValue).push(defaultWriter);
-						defaultWriter.writeReturn(returnValue);
-						getCurrentScope().end(ctx.start.getLine(), defaultWriter, returnValue);
-					}
-				}
+					 // add in helper methods for default values
+					 for(Param param : params) {
+						 if(param.defaultValue != null) {
+							 final ReturnValue returnValue = new ReturnValue(param.toInternalName());
+							 final MethodHeader defaultProvider = new MethodHeader(clazz.toInternalName(), details.name + "_" + param.name, null, returnValue, def.access + Opcodes.ACC_SYNTHETIC);
+							 addMethodDef(defaultProvider);
+							 final Actor defaultWriter = new Actor(defineMethod(defaultProvider), this);
+							 Pushable.parse(actor, param.defaultValue).push(defaultWriter);
+							 defaultWriter.writeReturn(returnValue);
+							 getCurrentScope().end(ctx.start.getLine(), defaultWriter, returnValue);
+						 }
+					 }
 
-			}
+				 }
+			 }
 		} catch(Exception e) {
 			printException(e);
 		}
@@ -515,7 +526,7 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 	}
 
 	public boolean hasConstant(final String name) {
-		for(Constant c : constants().keys()) {
+		for(Constant c : constants()) {
 			if(c.name.equals(name))
 				return true;
 		}
@@ -523,7 +534,7 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 	}
 
 	public Constant getConstant(final String name) {
-		for(Constant c : constants().keys()) {
+		for(Constant c : constants()) {
 			if(c.name.equals(name))
 				return c;
 		}
@@ -598,8 +609,8 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 		actor.visitVarInsn(ALOAD, 0);
 		actor.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
 
-		for(StaticField f : fields().keys()) {
-			if(f.ownerType.equals(getClazz().toInternalName()) && f instanceof ObjectField) {
+		for(Field f : fields()) {
+			if(f.ownerType.equals(getClazz().toInternalName()) && f instanceof InstanceField) {
 				// push "this"
 				actor.visitVarInsn(ALOAD, 0);
 				if(fields().get(f).variableDeclaration().SET() != null) {
@@ -614,6 +625,7 @@ public class CompilationUnit extends FizParserBaseListener implements Runnable, 
 				actor.visitFieldInsn(PUTFIELD, getClazz().toInternalName().nameString(), f.name, f.type.objectString());
 			}
 		}
+
 		final Label finish = new Label();
 		actor.visitLabel(finish);
 		actor.visitInsn(RETURN);
