@@ -21,7 +21,7 @@
 		<module>compiler</module>
 	</modules>
 	<properties>
-		<revision>0.10.3</revision>
+		<revision>0.10.4</revision>
 		<maven.version>3.9.8</maven.version> <!-- specified for dynamic revision ids -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.build.outputEncoding>UTF-8</project.build.outputEncoding>

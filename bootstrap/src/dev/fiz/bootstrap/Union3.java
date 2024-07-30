@@ -5,23 +5,23 @@ import java.util.function.Function;
 /**
  * A class that can be one of three types. This is useful for three unrelated types that need to be stored in the same variable. This class will refuse to store null values.
  */
-public abstract class AnyOf<A, B, C> {
+public abstract sealed class Union3<TypeA, TypeB, TypeC> {
 
 	/**
 	 * prevent outside subclassing by making default constructor private refuse to store null values
 	 */
-	private AnyOf(Object obj) throws NullPointerException {
+	private Union3(Object obj) throws NullPointerException {
 		failIfNull(obj);
 	}
 
 	/**
 	 * used by callers to apply 1 of 3 functions to the value, depending on its type
 	 */
-	public <R> R match(Function<A, R> funcA, Function<B, R> funcB, Function<C, R> funcC) {
+	public <ReturnType> ReturnType match(Function<TypeA, ReturnType> funcA, Function<TypeB, ReturnType> funcB, Function<TypeC, ReturnType> funcC) {
 		return switch(this) {
-			case ElementA<A, ?, ?> a -> funcA.apply(a.getValue());
-			case ElementB<?, B, ?> b -> funcB.apply(b.getValue());
-			case ElementC<?, ?, C> c -> funcC.apply(c.getValue());
+			case Union3.A<TypeA, ?, ?> a -> funcA.apply(a.getValue());
+			case Union3.B<?, TypeB, ?> b -> funcB.apply(b.getValue());
+			case Union3.C<?, ?, TypeC> c -> funcC.apply(c.getValue());
 			default -> throw new IllegalStateException("Failed to match type " + this.getClass().getName());
 		};
 	}
@@ -32,11 +32,12 @@ public abstract class AnyOf<A, B, C> {
 	protected abstract Object getValue();
 
 	/**
-	 * Provides access to equals() method of underlying value. If the Object given is an AnyOf, it will be unwrapped to compare underlying values.
+	 * Provides access to equals() method of underlying value.
+	 * If the Object given is a Union3, it will be unwrapped to compare underlying values.
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if(obj instanceof AnyOf<?, ?, ?> wrapper)
+		if(obj instanceof Union3<?, ?, ?> wrapper)
 			return getValue().equals(wrapper.getValue());
 		else
 			return getValue().equals(obj);
@@ -58,54 +59,54 @@ public abstract class AnyOf<A, B, C> {
 		return getValue().toString();
 	}
 
-	private static void failIfNull(Object o) throws NullPointerException {
+	public static void failIfNull(Object o) throws NullPointerException {
 		if(o == null)
 			throw new NullPointerException("value cannot be null");
 	}
 
-	public static final class ElementA<A, B, C> extends AnyOf<A, B, C> {
+	public static final class A<TypeA, TypeB, TypeC> extends Union3<TypeA, TypeB, TypeC> {
 
-		private final A value;
+		private final TypeA value;
 
-		public ElementA(A value) throws NullPointerException {
+		public A(TypeA value) throws NullPointerException {
 			super(value);
 			this.value = value;
 		}
 
 		@Override
-		public A getValue() {
+		public TypeA getValue() {
 			return value;
 		}
 
 	}
 
-	public static final class ElementB<A, B, C> extends AnyOf<A, B, C> {
+	public static final class B<TypeA, TypeB, TypeC> extends Union3<TypeA, TypeB, TypeC> {
 
-		private final B value;
+		private final TypeB value;
 
-		public ElementB(B value) throws NullPointerException {
+		public B(TypeB value) throws NullPointerException {
 			super(value);
 			this.value = value;
 		}
 
 		@Override
-		public B getValue() {
+		public TypeB getValue() {
 			return value;
 		}
 
 	}
 
-	public static final class ElementC<A, B, C> extends AnyOf<A, B, C> {
+	public static final class C<TypeA, TypeB, TypeC> extends Union3<TypeA, TypeB, TypeC> {
 
-		private final C value;
+		private final TypeC value;
 
-		public ElementC(C value) throws NullPointerException {
+		public C(TypeC value) throws NullPointerException {
 			super(value);
 			this.value = value;
 		}
 
 		@Override
-		public C getValue() {
+		public TypeC getValue() {
 			return value;
 		}
 

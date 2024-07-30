@@ -1,8 +1,8 @@
 package dev.fiz.bootstrap.names;
 
-import dev.fiz.bootstrap.AnyOf;
 import dev.fiz.bootstrap.CustomClass;
 import dev.fiz.bootstrap.PlaceHolder;
+import dev.fiz.bootstrap.Union3;
 
 public class InternalName implements ToInternalName, CommonText {
 
@@ -15,7 +15,7 @@ public class InternalName implements ToInternalName, CommonText {
 	public static final InternalName LONG = new InternalName(BaseType.LONG);
 	public static final InternalName DOUBLE = new InternalName(BaseType.DOUBLE);
 	public static final InternalName STRING = new InternalName(BaseType.STRING);
-	public static final InternalName VOID = new InternalName((AnyOf<Class<?>, BaseType, CustomClass>) null, 0);
+	public static final InternalName VOID = new InternalName((Union3<Class<?>, BaseType, CustomClass>) null, 0);
 	public static final InternalName PLACEHOLDER = new InternalName(PlaceHolder.class);
 
 	public static final InternalName STRING_BUILDER = new InternalName(StringBuilder.class);
@@ -38,10 +38,10 @@ public class InternalName implements ToInternalName, CommonText {
 	public static final String ARRAY_DIMENSIONS_OUT_OF_BOUNDS_MSG = "array dimensions must be within " + MIN_DIMENSIONS + " & " + MAX_DIMENSIONS;
 	public static final String ARRAY_MAY_NOT_BE_OF_TYPE_VOID_MSG = "This InternalName represents void, which is not a valid array type.";
 
-	public final AnyOf<Class<?>, BaseType, CustomClass> data;
+	public final Union3<Class<?>, BaseType, CustomClass> data;
 	public final int arrayDimensions;
 
-	public InternalName(final AnyOf<Class<?>, BaseType, CustomClass> data, final int arrayDimensions) {
+	public InternalName(final Union3<Class<?>, BaseType, CustomClass> data, final int arrayDimensions) {
 		this.data = data;
 		checkArrayDimensions(arrayDimensions);
 		this.arrayDimensions = arrayDimensions;
@@ -56,18 +56,18 @@ public class InternalName implements ToInternalName, CommonText {
 	}
 
 	public InternalName(final BaseType base) {
-		this(new AnyOf.ElementB<>(base), DEFAULT_ARRAY_DIMENSIONS);
+		this(new Union3.B<>(base), DEFAULT_ARRAY_DIMENSIONS);
 	}
 
 	public InternalName(final CustomClass cc) {
-		this(new AnyOf.ElementC<>(cc), DEFAULT_ARRAY_DIMENSIONS);
+		this(new Union3.C<>(cc), DEFAULT_ARRAY_DIMENSIONS);
 	}
 
-	public static AnyOf<Class<?>, BaseType, CustomClass> convertIfNecessary(final Class<?> c) {
+	public static Union3<Class<?>, BaseType, CustomClass> convertIfNecessary(final Class<?> c) {
 		if(BaseType.matchClassStrict(c) != null) {
-			return new AnyOf.ElementB<>(BaseType.matchClass(c));
+			return new Union3.B<>(BaseType.matchClass(c));
 		} else {
-			return new AnyOf.ElementA<>(c);
+			return new Union3.A<>(c);
 		}
 	}
 
@@ -77,25 +77,25 @@ public class InternalName implements ToInternalName, CommonText {
 	}
 
 	public boolean isCustom() {
-		// check that data has the 3rd type of the below parameterized ElementC
+		// check that data has the 3rd type of the below parameterized C
 		// you can use <> to infer all types, but that is less explicit for the reader
 		// we don't care what the other elements are allowed to hold, so we infer them with ?
-		return data instanceof AnyOf.ElementC<?, ?, CustomClass>;
+		return data instanceof Union3.C<?, ?, CustomClass>;
 	}
 
 	public boolean isClassType() {
 		// see isCustom() for explanation
-		return data instanceof AnyOf.ElementA<Class<?>, ?, ?>;
+		return data instanceof Union3.A<Class<?>, ?, ?>;
 	}
 
 	@Override
 	public boolean isBaseType() {
-		return data instanceof AnyOf.ElementB<?, BaseType, ?>;
+		return data instanceof Union3.B<?, BaseType, ?>;
 	}
 
 	@Override
 	public BaseType toBaseType() {
-		if(data instanceof AnyOf.ElementB<?, BaseType, ?> base)
+		if(data instanceof Union3.B<?, BaseType, ?> base)
 			return base.getValue();
 		else
 			return null;
