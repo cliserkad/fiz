@@ -15,7 +15,10 @@ import java.net.URLClassLoader;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class CompilationDispatcher implements CommonText {
 
@@ -38,6 +41,11 @@ public class CompilationDispatcher implements CommonText {
 	public final TrackedMap<StaticField, FizParser.FieldDefContext> fields = new TrackedMap<>();
 	public final Set<MethodHeader> methods = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
+	/**
+	 * @param input  Directory to search for source files, defaults to current working directory
+	 * @param filter FileFilter to use when searching for source files, defaults to all .fiz files
+	 * @param output Directory to write .class files, defaults to current working directory + /target/classes/
+	 */
 	public CompilationDispatcher(final File input, final FileFilter filter, final File output) {
 		if(input == null)
 			this.input = DEFAULT_INPUT;
@@ -61,11 +69,11 @@ public class CompilationDispatcher implements CommonText {
 			new CompilationDispatcher(null, null, null).dispatch();
 		else {
 			final CompilationDispatcher dispatcher;
-			if(arguments.get(0).equalsIgnoreCase(QUIET))
+			if(arguments.getFirst().equalsIgnoreCase(QUIET))
 				dispatcher = new CompilationDispatcher(null, FIZ_FILTER, null);
 			else {
-				dispatcher = new CompilationDispatcher(null, new RegexFileFilter(arguments.get(0)), null);
-				arguments.remove(0);
+				dispatcher = new CompilationDispatcher(null, new RegexFileFilter(arguments.getFirst()), null);
+				arguments.removeFirst();
 			}
 
 			if(arguments.contains(QUIET))

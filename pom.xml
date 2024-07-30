@@ -1,10 +1,14 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>dev.fiz</groupId>
 	<artifactId>parent</artifactId>
+	<name>fiz</name>
 	<packaging>pom</packaging>
-	<version>0.10.0</version>
+	<version>${revision}</version>
+	<url>https://fiz.dev</url>
 	<scm>
 		<connection>scm:git:${project.scm.url}</connection>
 		<developerConnection>scm:git:${project.scm.url}</developerConnection>
@@ -16,20 +20,44 @@
 		<module>fiz-maven-plugin</module>
 		<module>compiler</module>
 	</modules>
-	<name>fiz</name>
 	<properties>
+		<revision>0.10.1</revision>
+		<maven.version>3.9.8</maven.version> <!-- specified for dynamic revision ids -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<!--
-		<maven.version>3.8.6</maven.version>
-		<maven.core-version>3.2.5</maven.core-version>
-		-->
+		<project.build.outputEncoding>UTF-8</project.build.outputEncoding>
 	</properties>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
+				<!-- This plugin allows us to use dynamic versions in the parent pom, and deploy as normal -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<version>1.1.0</version>
+				<configuration>
+					<updatePomFile>true</updatePomFile>
+					<flattenMode>resolveCiFriendliesOnly</flattenMode>
+				</configuration>
+				<executions>
+					<execution>
+						<id>flatten</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>flatten</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>flatten.clean</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.12.1</version>
+				<version>3.13.0</version>
 				<configuration>
 					<release>21</release>
 				</configuration>
@@ -61,7 +89,7 @@
 				<configuration>
 					<java>
 						<eclipse>
-							<file>${project.basedir}/java-format.xml</file> <!-- optional -->
+							<file>${maven.multiModuleProjectDirectory}/java-format.xml</file> <!-- optional -->
 						</eclipse>
 						<!-- USE TABS!!! -->
 						<indent>
@@ -103,6 +131,12 @@
 			<version>5.10.1</version>
 		</dependency>
 		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.15.1</version>
@@ -115,4 +149,15 @@
 			<url>https://maven.pkg.github.com/cliserkad/fiz</url>
 		</repository>
 	</distributionManagement>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>github</id>
+			<name>GitHub cliserkad Apache Maven Packages</name>
+			<layout>default</layout>
+			<url>https://maven.pkg.github.com/cliserkad/fiz</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 </project>

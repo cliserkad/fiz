@@ -4,6 +4,7 @@
 # Maven output
 **/gen
 **/target
+*.flattened-pom.xml
 
 # IntelliJ files
 **/.idea

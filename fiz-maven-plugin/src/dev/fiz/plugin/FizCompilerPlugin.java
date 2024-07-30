@@ -24,6 +24,21 @@ import java.io.File;
 public class FizCompilerPlugin extends AbstractMojo {
 
 	/**
+	 * Used via injection for Maven Plugin
+	 */
+	public FizCompilerPlugin() {
+
+	}
+
+	/**
+	 * For unit testing
+	 */
+	public FizCompilerPlugin(final File sourceDirectory, final File outputDirectory) {
+		this.sourceDirectory = sourceDirectory;
+		this.outputDirectory = outputDirectory;
+	}
+
+	/**
 	 * Location of compiled (output) .class files
 	 */
 	@Parameter(
