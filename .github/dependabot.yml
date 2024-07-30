@@ -12,3 +12,4 @@ updates:
     commit-message:
       prefix: "update pom.xml"
       include: "scope"
+    open-pull-requests-limit: 1
