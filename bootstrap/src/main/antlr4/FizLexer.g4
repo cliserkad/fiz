@@ -29,7 +29,6 @@ RETURN: 'return';
 R_ELSE: 'else';
 R_IF: 'if';
 R_NULL: 'null';
-SIZE: 'size';
 TYPE: 'type';
 IMPORT: 'import';
 WHILE: 'while';

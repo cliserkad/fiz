@@ -1,0 +1,15 @@
+git rev-parse --short HEAD | TZ=UTC git show -s --date=local --date=format:%Y%m%d --pretty=format:%ad@%h
+
+fiz:20231223@
+
+dependencies: [
+	{
+		url: "https://github.com/cliserkad/fiz";
+		branch: "main";
+		tag: "v0.9.0";
+		hash: "";
+		date: "";
+	},
+];
+
+

@@ -2,6 +2,7 @@ package dev.fiz.bootstrap;
 
 import dev.fiz.bootstrap.antlr.FizParser;
 import dev.fiz.bootstrap.ir.Constant;
+import dev.fiz.bootstrap.ir.Field;
 import dev.fiz.bootstrap.ir.StaticField;
 import dev.fiz.bootstrap.names.CommonText;
 import org.apache.commons.io.filefilter.RegexFileFilter;
@@ -40,8 +41,8 @@ public class CompilationDispatcher implements CommonText {
 
 	private ClassLoader classLoader;
 
-	public final TrackedMap<Constant, FizParser.ConstantDefContext> constants = new TrackedMap<>();
-	public final TrackedMap<StaticField, FizParser.FieldDefContext> fields = new TrackedMap<>();
+	public final Set<Constant> constants = Collections.newSetFromMap(new ConcurrentHashMap<>());
+	public final Set<Field> fields = Collections.newSetFromMap(new ConcurrentHashMap<>());
 	public final Set<MethodHeader> methods = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
 	/**
