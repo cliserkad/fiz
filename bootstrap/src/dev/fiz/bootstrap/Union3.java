@@ -15,14 +15,26 @@ public abstract sealed class Union3<TypeA, TypeB, TypeC> {
 	}
 
 	/**
-	 * used by callers to apply 1 of 3 functions to the value, depending on its type
+	 * apply 1 of 3 functions to the value, depending on its type.
 	 */
 	public <ReturnType> ReturnType match(Function<TypeA, ReturnType> funcA, Function<TypeB, ReturnType> funcB, Function<TypeC, ReturnType> funcC) {
 		return switch(this) {
 			case Union3.A<TypeA, ?, ?> a -> funcA.apply(a.getValue());
 			case Union3.B<?, TypeB, ?> b -> funcB.apply(b.getValue());
 			case Union3.C<?, ?, TypeC> c -> funcC.apply(c.getValue());
-			default -> throw new IllegalStateException("Failed to match type " + this.getClass().getName());
+		};
+	}
+
+	/**
+	 * apply 1 of 3 functions to the value, depending on its type. May throw an exception
+	 *
+	 * @throws Exception if the called function throws an Exception
+	 */
+	public <ReturnType> ReturnType matchFallible(CheckedFunction<TypeA, ReturnType> funcA, CheckedFunction<TypeB, ReturnType> funcB, CheckedFunction<TypeC, ReturnType> funcC) throws Exception {
+		return switch(this) {
+			case Union3.A<TypeA, ?, ?> a -> funcA.apply(a.getValue());
+			case Union3.B<?, TypeB, ?> b -> funcB.apply(b.getValue());
+			case Union3.C<?, ?, TypeC> c -> funcC.apply(c.getValue());
 		};
 	}
 
