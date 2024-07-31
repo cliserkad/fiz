@@ -1,13 +1,14 @@
 package dev.fiz.bootstrap.ir;
 
 import dev.fiz.bootstrap.Actor;
+import dev.fiz.bootstrap.Union2;
 import dev.fiz.bootstrap.antlr.FizParser;
 import dev.fiz.bootstrap.names.BaseType;
 import dev.fiz.bootstrap.names.InternalName;
 
 public class Expression extends BasePushable {
 
-	public Pushable a;
+	public Union2<Pushable, InternalName> a;
 	public Pushable b;
 	public Operator opr;
 
@@ -20,13 +21,13 @@ public class Expression extends BasePushable {
 			throw new NullPointerException("Expression operator cannot be null");
 		if(!a.isBaseType() || !b.isBaseType())
 			throw new IllegalArgumentException("Expressions may only contain BaseTypes");
-		this.a = a;
+		this.a = new Union2.A<>(a);
 		this.b = b;
 		this.opr = opr;
 	}
 
 	public Expression(FizParser.ExpressionContext ctx, Actor actor) throws Exception {
-		this(Pushable.parse(actor, ctx.value()), parseExpressionContext(ctx.expression(), actor), Operator.match(ctx.operator()));
+		this(Pushable.parse(actor, ctx.component()), parseExpressionContext(ctx.expression(), actor), Operator.match(ctx.operator()));
 	}
 
 	/**
@@ -35,7 +36,7 @@ public class Expression extends BasePushable {
 	 */
 	public static Pushable parseExpressionContext(FizParser.ExpressionContext ctx, Actor actor) throws Exception {
 		if(ctx.expression() == null)
-			return Pushable.parse(actor, ctx.value());
+			return Pushable.parse(actor, ctx.component());
 		else
 			return new Expression(ctx, actor);
 	}
@@ -48,17 +49,17 @@ public class Expression extends BasePushable {
 
 	@Override
 	public InternalName toInternalName() {
-		return a.toInternalName();
+		return a.match((Pushable p) -> p.toInternalName(), (InternalName i) -> i);
 	}
 
 	@Override
 	public boolean isBaseType() {
-		return a.isBaseType();
+		return toInternalName().isBaseType();
 	}
 
 	@Override
 	public BaseType toBaseType() {
-		return a.toBaseType();
+		return toInternalName().toBaseType();
 	}
 
 	public String toString() {

@@ -14,9 +14,12 @@ decimalNumber: DIGIT? (DIGIT | SEPARATOR | UNDERSCORE)* DOT DIGIT (DIGIT | SEPAR
 integer: DIGIT (DIGIT | SEPARATOR | UNDERSCORE)*;
 literal: bool | CHAR_LIT | STRING_LIT | integer | decimalNumber;
 
-arrayLength: ID DOT SIZE;
-
-statement: methodCall | variableDeclaration | assignment | returnStatement | conditional;
+// expression -> evaluate and push on to stack
+// variableDeclaration -> declare variable and optionally assign value from stack
+// assignment -> assign value from stack to variable or field
+// returnStatement -> return value from stack
+// conditional -> conditionally control flow, using { } to group statements
+statement: expression | variableDeclaration | assignment | returnStatement | conditional;
 block: BODY_OPEN statement* BODY_CLOSE;
 
 // for loop
@@ -31,39 +34,40 @@ r_else: R_ELSE (statement | block);
 assertion: ASSERT condition;
 r_while: WHILE condition block;
 
-addressable: ID (DOT ID)*;
-value: addressable | methodCall | arrayLength | literal | indexAccess | subSequence | R_NULL;
-operator: ADD | SUB | DIV | MUL | MOD | AND | OR | BIT_AND | BIT_OR;
-expression: value (operator expression)?;
+component: ID | methodCall | literal | indexAccess | subSequence | R_NULL;
+operator: DOT | ADD | SUB | DIV | MUL | MOD | AND | OR | BIT_AND | BIT_OR;
+expression: component (operator expression)?;
 
 condition: expression (comparator expression)?;
 comparator: EQUAL | NOT_EQUAL | REF_EQUAL | REF_NOT_EQUAL | MORE_THAN | LESS_THAN | MORE_OR_EQUAL | LESS_OR_EQUAL;
 
 variableDeclaration: details (SEPARATOR ID)* (SET expression)?;
-assignment: (addressable) ((SET expression) | operatorAssign);
-operatorAssign: operator SET value;
+assignment: expression ((SET expression) | operatorAssign);
+operatorAssign: operator SET expression;
 details: type MUTABLE? ID;
 indexAccess: ID BRACE_OPEN expression BRACE_CLOSE;
 subSequence: ID BRACE_OPEN range BRACE_CLOSE;
 
 // method calls
-methodCall: addressable parameterSet;
+methodCall: ID parameterSet;
 parameterSet: PARAM_OPEN (expression (SEPARATOR expression)*)? PARAM_CLOSE;
 
 // method definitions
 methodDefinition: (details | ID MUTABLE?) paramSet block;
 paramSet: PARAM_OPEN ((ID | param) (SEPARATOR param)*)? PARAM_CLOSE;
-param: details (SET value)?;
+param: details (SET expression)?;
 
 returnStatement: RETURN expression?;
 
 type: (basetype | ID) (BRACE_OPEN BRACE_CLOSE)*;
 basetype: BOOLEAN | BYTE | SHORT | CHAR | INT | FLOAT | LONG | DOUBLE | STRING;
 
+qualifiedName: ID (DOT ID)*;
+
 source: package? imports? clazz EOF;
-package: PACKAGE addressable;
-imports: IMPORT BODY_OPEN addressable+ BODY_CLOSE;
+package: PACKAGE qualifiedName;
+imports: IMPORT BODY_OPEN qualifiedName+ BODY_CLOSE;
 clazz: TYPE ID BODY_OPEN (constantDef | fieldDef | main | methodDefinition)* BODY_CLOSE;
-constantDef: CONST ID SET value;
+constantDef: CONST ID SET expression;
 fieldDef: variableDeclaration;
 main: MAIN block;
