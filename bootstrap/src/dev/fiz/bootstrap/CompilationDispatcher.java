@@ -103,8 +103,9 @@ public class CompilationDispatcher implements CommonText {
 			threadPool.shutdown();
 			try {
 				threadPool.awaitTermination(10, TimeUnit.MINUTES);
-			} catch(InterruptedException e) {
-				// continue
+			} finally {
+				if(!threadPool.isTerminated())
+					threadPool.shutdownNow();
 			}
 		}
 		writeAndVerify(units);
@@ -136,7 +137,11 @@ public class CompilationDispatcher implements CommonText {
 			try {
 				threadPool.awaitTermination(10, TimeUnit.MINUTES);
 			} catch(InterruptedException e) {
-				// continue
+				System.err.println("Thread pool was interrupted");
+				e.printStackTrace();
+			} finally {
+				if(!threadPool.isTerminated())
+					threadPool.shutdownNow();
 			}
 		}
 		try {

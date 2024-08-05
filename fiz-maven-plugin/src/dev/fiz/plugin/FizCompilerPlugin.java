@@ -69,7 +69,6 @@ public class FizCompilerPlugin extends AbstractMojo {
 		// append a slash to the file path if it isn't a directory
 		if(!outputDirectory.isDirectory())
 			outputDirectory = new File(outputDirectory.getPath() + "/");
-		outputDirectory = new File(outputDirectory, "classes/");
 		getLog().info("Input Directory: " + sourceDirectory);
 		getLog().info("Output Directory: " + outputDirectory);
 		// dispatch compilation
