@@ -16,7 +16,7 @@ public class IsEvenTest {
 		for(int n : NUMS)
 			outputs.add(isEven(n));
 
-		new StandardFizTest("IsEven", arguments, outputs);
+		new StandardFizTest("IsEven", arguments, outputs).testFiz();
 	}
 
 	public String isEven(int n) {

@@ -10,7 +10,7 @@ public class PrintArgTest {
 	@Test
 	public void testPrintArg() {
 		BestList<String> printArgArguments = new BestList<>(ARGS);
-		new StandardFizTest("PrintArg", printArgArguments, printArgArguments);
+		new StandardFizTest("PrintArg", printArgArguments, printArgArguments).testFiz();
 	}
 
 }

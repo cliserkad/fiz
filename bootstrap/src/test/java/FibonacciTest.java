@@ -13,7 +13,7 @@ public class FibonacciTest {
 			arguments.add("" + n);
 			outputs.add("" + fib(n));
 		}
-		new StandardFizTest("Fibonacci", arguments, outputs);
+		new StandardFizTest("Fibonacci", arguments, outputs).testFiz();
 	}
 
 	static int fib(int n) {

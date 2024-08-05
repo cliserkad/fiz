@@ -16,7 +16,7 @@ public class FizzBuzzTest {
 		for(int n : NUMS)
 			fizzBuzzOutputs.add(fizzBuzz(n));
 
-		new StandardFizTest("FizzBuzz", fizzBuzzArguments, fizzBuzzOutputs);
+		new StandardFizTest("FizzBuzz", fizzBuzzArguments, fizzBuzzOutputs).testFiz();
 	}
 
 	public String fizzBuzz(int input) {
