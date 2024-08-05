@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * A container that has both a list and a map to use them as one. This was primarily made for caching.
@@ -30,7 +31,7 @@ public class TrackedMap<K, E> implements Iterable<E> {
 	 * Creates a TrackedHashMap() and sets the tracker's capacity to 0.
 	 */
 	public TrackedMap() {
-		tracker = new ArrayList<>();
+		tracker = new CopyOnWriteArrayList<>();
 		container = new ConcurrentHashMap<>();
 	}
 
@@ -262,7 +263,7 @@ public class TrackedMap<K, E> implements Iterable<E> {
 
 	@Override
 	public Iterator<E> iterator() {
-		return new Iterator<E>() {
+		return new Iterator<>() {
 
 			private int currentIndex = 0;
 
@@ -287,8 +288,7 @@ public class TrackedMap<K, E> implements Iterable<E> {
 
 	@Override
 	public boolean equals(Object o) {
-		if(o instanceof TrackedMap<?, ?>) {
-			TrackedMap<?, ?> map = (TrackedMap<?, ?>) o;
+		if(o instanceof TrackedMap<?, ?> map) {
 			return equals(map);
 		} else
 			return false;
