@@ -1,6 +1,9 @@
 package dev.fiz.bootstrap;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -21,7 +24,7 @@ public class TrackedMap<K, E> implements Iterable<E> {
 	/**
 	 * The container retains the relationship between keys and elements. Elements are always retrieved using a key
 	 */
-	private final ConcurrentHashMap<K, Optional<E>> container;
+	private final ConcurrentHashMap<K, E> container;
 
 	/**
 	 * Creates a TrackedHashMap() and sets the tracker's capacity to 0.
@@ -158,7 +161,7 @@ public class TrackedMap<K, E> implements Iterable<E> {
 	 * @return The element that is being retrieved
 	 */
 	public E get(K key) {
-		return container.get(key).orElse(null);
+		return container.get(key);
 	}
 
 	/**
@@ -168,7 +171,7 @@ public class TrackedMap<K, E> implements Iterable<E> {
 	 * @return The element at the given index
 	 */
 	public E get(int i) {
-		return container.get(key(i)).orElse(null);
+		return container.get(key(i));
 	}
 
 	/**
@@ -177,7 +180,7 @@ public class TrackedMap<K, E> implements Iterable<E> {
 	 * @return A random element.
 	 */
 	public E getRandom() {
-		return container.get(randomKey()).orElse(null);
+		return container.get(randomKey());
 	}
 
 	// Adding
@@ -191,7 +194,8 @@ public class TrackedMap<K, E> implements Iterable<E> {
 	public void add(K key, E element) {
 		if(!contains(key)) {
 			tracker.add(key);
-			container.put(key, Optional.ofNullable(element));
+			if(element != null)
+				container.put(key, element);
 		}
 	}
 
@@ -205,7 +209,8 @@ public class TrackedMap<K, E> implements Iterable<E> {
 		if(contains(key))
 			remove(key);
 		tracker.add(key);
-		container.put(key, Optional.ofNullable(element));
+		if(element != null)
+			container.put(key, element);
 	}
 
 	// Removing
