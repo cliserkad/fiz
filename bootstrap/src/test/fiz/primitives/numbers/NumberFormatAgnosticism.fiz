@@ -1,0 +1,11 @@
+// numeric constants should permit formatting that makes them more human readable.
+// the compiler should be uninformed of formatting.
+type NumberFormatAgnosticism {
+    const DOLLARS = 1,000_00
+    const DOLLARS_AND_CENTS = 1_000.56
+
+    main {
+      println(DOLLARS)
+      println(DOLLARS_AND_CENTS)
+    }
+}

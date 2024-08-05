@@ -1,4 +1,4 @@
-package test.fiz.sample;
+package test.fiz.io;
 
 import java.io.File;
 import java.io.IOException;

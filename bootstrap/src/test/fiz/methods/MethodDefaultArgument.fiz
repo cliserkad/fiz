@@ -1,0 +1,19 @@
+// This example demonstrates how to use default arguments in methods.
+// The fib method has a default argument of 10. If no argument is provided, the default value is used.
+type MethodDefaultArgument {
+  main {
+    println(fib(5))
+    println(fib())
+    println(fib(12))
+  }
+
+	// calculate the nth fibonacci number
+  i32 fib(i32 n= 10) {
+    if n <= 1 {
+      return n
+    } else {
+      return fib(n - 1) + fib(n - 2)
+    }
+  }
+
+}

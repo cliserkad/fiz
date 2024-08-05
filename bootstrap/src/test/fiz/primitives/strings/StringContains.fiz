@@ -1,4 +1,4 @@
-type ContainsCake {
+type StringContains {
   main {
     if args.size > 0 {
       string s= args[0]

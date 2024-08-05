@@ -1,8 +1,8 @@
-package test.fiz.sample
+package test.fiz.io
 
 import {
     java.io.File
-    test.fiz.sample.FileUtil
+    test.fiz.io.FileUtil
 }
 
 type MakeFile {

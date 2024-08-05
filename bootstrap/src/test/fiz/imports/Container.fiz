@@ -1,4 +1,4 @@
-package test.fiz.files
+package test.fiz.imports
 
 type Container {
     const CONST_MSG= "This message came from Container.fiz"

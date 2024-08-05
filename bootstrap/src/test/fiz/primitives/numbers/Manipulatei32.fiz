@@ -1,4 +1,4 @@
-type Math {
+type Manipulatei32 {
   main {
     i32~ a = 1
     println(a)

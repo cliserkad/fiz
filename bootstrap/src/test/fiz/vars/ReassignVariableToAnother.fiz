@@ -1,4 +1,4 @@
-type ComplexVariables {
+type ReassignVariableToAnother {
   main {
     string~ s = "hi"
     string s2 = "hello from ComplexVariables"

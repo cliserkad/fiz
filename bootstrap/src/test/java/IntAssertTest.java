@@ -6,7 +6,7 @@ public class IntAssertTest {
 
 	@Test
 	public void testIntAssert() {
-		new StandardFizTest("IntAssert").testFiz();
+		new StandardFizTest("dev.fiz.test.assertions.IntAssert").testFiz();
 	}
 
 }

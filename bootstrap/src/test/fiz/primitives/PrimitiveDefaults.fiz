@@ -1,4 +1,4 @@
-type BaseTypeDefaults {
+type PrimitiveDefaults {
   main {
     i32 i
     boolean b
