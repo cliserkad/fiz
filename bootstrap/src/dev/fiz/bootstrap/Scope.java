@@ -8,6 +8,7 @@ import dev.fiz.bootstrap.names.ToInternalName;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import xyz.cliserkad.util.BestList;
 
 public class Scope implements Opcodes {
 

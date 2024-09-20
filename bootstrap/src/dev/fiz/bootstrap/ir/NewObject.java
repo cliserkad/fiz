@@ -1,7 +1,6 @@
 package dev.fiz.bootstrap.ir;
 
 import dev.fiz.bootstrap.Actor;
-import dev.fiz.bootstrap.BestList;
 import dev.fiz.bootstrap.CompilationUnit;
 import dev.fiz.bootstrap.MethodHeader;
 import dev.fiz.bootstrap.antlr.FizParser;
@@ -9,6 +8,7 @@ import dev.fiz.bootstrap.names.BaseType;
 import dev.fiz.bootstrap.names.InternalName;
 import dev.fiz.bootstrap.names.ReturnValue;
 import org.objectweb.asm.Opcodes;
+import xyz.cliserkad.util.BestList;
 
 public class NewObject extends BasePushable implements Opcodes {
 

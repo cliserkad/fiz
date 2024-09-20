@@ -1,6 +1,6 @@
 package test.java;
 
-import dev.fiz.bootstrap.BestList;
+import xyz.cliserkad.util.BestList;
 
 import java.io.BufferedReader;
 import java.io.IOException;

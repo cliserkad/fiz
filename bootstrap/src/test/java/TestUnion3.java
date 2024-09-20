@@ -1,7 +1,7 @@
 package test.java;
 
-import dev.fiz.bootstrap.Union3;
 import org.junit.jupiter.api.Test;
+import xyz.cliserkad.util.Union3;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

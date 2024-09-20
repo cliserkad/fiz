@@ -1,13 +1,9 @@
 package dev.fiz.bootstrap;
 
 import dev.fiz.bootstrap.antlr.FizLexer;
-import dev.fiz.bootstrap.antlr.FizParserBaseListener;
 import dev.fiz.bootstrap.antlr.FizParser;
+import dev.fiz.bootstrap.antlr.FizParserBaseListener;
 import dev.fiz.bootstrap.ir.*;
-import dev.fiz.bootstrap.names.CommonText;
-import dev.fiz.bootstrap.names.Details;
-import dev.fiz.bootstrap.names.InternalName;
-import dev.fiz.bootstrap.names.ReturnValue;
 import dev.fiz.bootstrap.names.*;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -15,6 +11,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.objectweb.asm.*;
+import xyz.cliserkad.util.BestList;
 
 import java.io.File;
 import java.io.IOException;

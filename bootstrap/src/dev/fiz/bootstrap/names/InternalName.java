@@ -1,8 +1,8 @@
 package dev.fiz.bootstrap.names;
 
 import dev.fiz.bootstrap.CustomClass;
-import dev.fiz.bootstrap.PlaceHolder;
-import dev.fiz.bootstrap.Union3;
+import xyz.cliserkad.util.PlaceHolder;
+import xyz.cliserkad.util.Union3;
 
 public class InternalName implements ToInternalName, CommonText {
 

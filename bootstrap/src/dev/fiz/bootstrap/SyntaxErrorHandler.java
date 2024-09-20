@@ -3,6 +3,7 @@ package dev.fiz.bootstrap;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
+import xyz.cliserkad.util.BestList;
 
 public class SyntaxErrorHandler extends BaseErrorListener {
 

@@ -1,12 +1,12 @@
 package test.java;
 
-import dev.fiz.bootstrap.BestList;
 import dev.fiz.bootstrap.CompilationDispatcher;
 import org.apache.commons.io.filefilter.RegexFileFilter;
+import xyz.cliserkad.util.BestList;
 
-import static dev.fiz.bootstrap.BestList.list;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static xyz.cliserkad.util.BestList.list;
 
 public class StandardFizTest {
 

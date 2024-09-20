@@ -1,10 +1,14 @@
 package dev.fiz.bootstrap.ir;
 
+import dev.fiz.bootstrap.Actor;
+import dev.fiz.bootstrap.MethodInvocation;
+import dev.fiz.bootstrap.MethodTarget;
+import dev.fiz.bootstrap.SymbolResolutionException;
 import dev.fiz.bootstrap.antlr.FizParser;
 import dev.fiz.bootstrap.names.BaseType;
 import dev.fiz.bootstrap.names.CommonText;
 import dev.fiz.bootstrap.names.InternalName;
-import dev.fiz.bootstrap.*;
+import xyz.cliserkad.util.BestList;
 
 public class MethodCall extends BasePushable implements CommonText {
 

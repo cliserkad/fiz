@@ -23,6 +23,10 @@ jobs:
           java-version: '21'
           # use the github actions cached jdk if available.
           check-latest: false
+      - name: Generate Maven settings.xml
+        uses: s4u/maven-settings-action@v3.0.0
+        with:
+          servers: '[{"id": "github-smp", "username": "${{ secrets.USERNAME }}", "password": "${{ secrets.TOKEN }}"}]'
       - name: mvn test
         # maven almost always fails to generate sources correctly without cleaning
         # transfer progress is disabled to avoid spamming the log with progress bars

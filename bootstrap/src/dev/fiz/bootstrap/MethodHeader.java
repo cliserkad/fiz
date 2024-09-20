@@ -3,6 +3,7 @@ package dev.fiz.bootstrap;
 import dev.fiz.bootstrap.ir.Param;
 import dev.fiz.bootstrap.names.*;
 import org.objectweb.asm.MethodVisitor;
+import xyz.cliserkad.util.BestList;
 
 import java.lang.reflect.Method;
 import java.util.List;

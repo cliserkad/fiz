@@ -6,6 +6,7 @@ import dev.fiz.bootstrap.names.BaseType;
 import dev.fiz.bootstrap.names.InternalName;
 import dev.fiz.bootstrap.names.ReturnValue;
 import org.objectweb.asm.Opcodes;
+import xyz.cliserkad.util.BestList;
 
 public class MethodInvocation implements Pushable {
 

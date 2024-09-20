@@ -1,7 +1,7 @@
 package test.java;
 
-import dev.fiz.bootstrap.BestList;
 import org.junit.jupiter.api.Test;
+import xyz.cliserkad.util.BestList;
 
 public class FizzBuzzTest {
 

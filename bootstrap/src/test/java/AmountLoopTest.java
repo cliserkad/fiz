@@ -2,7 +2,7 @@ package test.java;
 
 import org.junit.jupiter.api.Test;
 
-import static dev.fiz.bootstrap.BestList.list;
+import static xyz.cliserkad.util.BestList.list;
 
 public class AmountLoopTest {
 
