@@ -12,6 +12,7 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.objectweb.asm.*;
 import xyz.cliserkad.util.BestList;
+import xyz.cliserkad.util.TrackedMap;
 
 import java.io.File;
 import java.io.IOException;
