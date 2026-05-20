@@ -11,4 +11,12 @@
 	</parent>
 	<artifactId>bootstrap</artifactId>
 	<name>fiz Java Bootstrap</name>
+	<dependencies>
+		<dependency>
+			<groupId>xyz.cliserkad</groupId>
+			<artifactId>smp</artifactId>
+			<version>0.0.23-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
 </project>
