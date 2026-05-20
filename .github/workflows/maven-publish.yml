@@ -11,9 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          show-progress: false
       - name: Set up Java 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           # this distribution is cached by github actions
           distribution: 'temurin'
@@ -26,6 +28,6 @@ jobs:
         with:
           servers: '[{"id": "github-smp", "username": "${{ secrets.USERNAME }}", "password": "${{ secrets.TOKEN }}"}]'
       - name: mvn deploy
-        run: mvn -B deploy --no-transfer-progress
+        run: mvn clean deploy --batch-mode --no-transfer-progress
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
