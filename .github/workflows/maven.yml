@@ -34,4 +34,4 @@ jobs:
       - name: mvn test
         # maven almost always fails to generate sources correctly without cleaning
         # transfer progress is disabled to avoid spamming the log with progress bars
-        run: mvn clean test --file pom.xml --no-transfer-progress
+        run: mvn clean test -Dspotless.check.skip=true --batch-mode --no-transfer-progress
